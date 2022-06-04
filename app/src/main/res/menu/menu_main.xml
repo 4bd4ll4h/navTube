@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.abd4ll4h.navtube.MainActivity">
+    <item
+        android:id="@+id/mainFilter"
+        android:title="@string/filter"
+        android:icon="@drawable/ic_filter"
+        app:showAsAction="withText|always"
+        />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+</menu>

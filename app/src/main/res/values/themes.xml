@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.NavTube" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:textColorPrimary">@color/primaryDark</item>
+        <item name="android:windowBackground">@color/primary</item>
+        <item name="android:colorAccent">@color/primaryDark</item>
+        <item name="android:textColorSecondary">@color/unactive</item>
+        <item name="android:textAppearance">?android:textAppearancePopupMenuHeader</item>
+    </style>
+
+    <style name="Theme.NavTube" parent="Base.Theme.NavTube" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.NavTube</item>
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/primaryDark</item>
+
+    </style>
+</resources>
