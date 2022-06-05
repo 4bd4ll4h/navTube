@@ -28,6 +28,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/main_bottom_nav"
+        app:itemTextColor="@color/nav_bottom_selector"
+        app:itemIconTint="@color/nav_bottom_selector"
         app:backgroundTint="?android:colorPrimary"
 
        />

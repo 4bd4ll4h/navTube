@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:elevation="4dp"
-        app:logo="@drawable/ic_launcher_foreground"
+        app:logo="@drawable/nav_logo"
         app:menu="@menu/menu_main"
         android:background="?android:colorPrimary"
         app:theme="@style/Base.Theme.NavTube"

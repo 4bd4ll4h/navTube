@@ -33,6 +33,12 @@ class mainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setOnMenuItemClicked()
+
+
+    }
+
+    private fun setOnMenuItemClicked() {
         _binding!!.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_settings -> {
@@ -47,7 +53,9 @@ class mainFragment : Fragment() {
             }
 
         }
-
+        _binding!!.toolBar.menu.getItem(0).actionView.setOnClickListener {
+            Toast.makeText(context,"Soon",Toast.LENGTH_LONG).show()
+        }
 
     }
 

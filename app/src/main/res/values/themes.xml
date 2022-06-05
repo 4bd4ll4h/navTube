@@ -4,10 +4,9 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:textColorPrimary">@color/primaryDark</item>
-        <item name="android:windowBackground">@color/primary</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:colorAccent">@color/primaryDark</item>
         <item name="android:textColorSecondary">@color/unactive</item>
-        <item name="android:textAppearance">?android:textAppearancePopupMenuHeader</item>
     </style>
 
     <style name="Theme.NavTube" parent="Base.Theme.NavTube" />

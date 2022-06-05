@@ -5,8 +5,8 @@
     <item
         android:id="@+id/mainFilter"
         android:title="@string/filter"
-        android:icon="@drawable/ic_filter"
-        app:showAsAction="withText|always"
+        app:actionLayout="@layout/main_toolbar_menu_item"
+        app:showAsAction="ifRoom"
         />
 
     <item
