@@ -1,6 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="204dp"
+    android:theme="@style/mainCard">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/rectangle_3"
+        android:layout_width="match_parent"
+        android:layout_height="203dp"
+        android:contentDescription="@string/video_thumbnail"
+        android:scaleType="fitXY"
+        android:src="@drawable/main_card_effect"
+        tool:background="@tools:sample/backgrounds/scenic" />
+
+    <com.abd4ll4h.navtube.ShadowLayout
+        android:id="@+id/iconLyoutSh"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        app:sl_shadow_angle="25"
+        app:sl_shadow_color="#7D8889"
+        app:sl_shadow_distance="1.2dp"
+        app:sl_shadow_radius="0dp"
+        app:sl_shadowed="true">
+
+        <LinearLayout
+
+            android:id="@+id/iconLyout"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:orientation="vertical">
+
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="4dp"
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/more_option"
+                android:elevation="200dp"
+                android:src="@drawable/ic_card_more" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="4dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/play_video"
+                android:src="@drawable/ic_play_circle" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="4dp"
+                android:background="@android:color/transparent"
+
+                android:contentDescription="@string/share_to_community"
+                android:elevation="40dp"
+                android:src="@drawable/ic_card_public" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="4dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/favorite_the_video"
+                android:src="@drawable/ic_card_favorite" />
+        </LinearLayout>
+    </com.abd4ll4h.navtube.ShadowLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/circle_image"
+            tool:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="13sp"
+            tool:text="Morbi aliquam velit" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_toStartOf="@id/iconLyoutSh"
+        android:ellipsize="end"
+        android:maxLines="2"
+        tool:text="Morbi aliquam velit tellus, sed volutpat lorem fringilla etMorbi aliquam velit tellus, sed volutpat lorem fringilla et" />
+</RelativeLayout>

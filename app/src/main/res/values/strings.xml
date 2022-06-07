@@ -49,4 +49,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="filter">Filter</string>
+    <string name="more_option">more option</string>
+    <string name="play_video">play video</string>
+    <string name="share_to_community">share to community</string>
+    <string name="favorite_the_video">favorite the video</string>
+    <string name="video_thumbnail">video thumbnail</string>
 </resources>

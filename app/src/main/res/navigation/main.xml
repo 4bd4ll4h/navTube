@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/mainLayout"
         android:label="Home"
-        android:name="com.abd4ll4h.navtube.mainFragment"
+        android:name="com.abd4ll4h.navtube.MainFragment"
         tools:layout="@layout/fragment_main"/>
 
 </navigation>

@@ -1,45 +1,39 @@
 package com.abd4ll4h.navtube
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
+import com.abd4ll4h.navtube.DataFetch.Scraper
 import com.abd4ll4h.navtube.databinding.FragmentMainBinding
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
-class mainFragment : Fragment() {
+
+class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
-
+    private val  recyclerView= lazy { binding.mainList }
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setOnMenuItemClicked()
 
+        val scraper =Scraper(requireContext())
 
-    }
+        }
 
     private fun setOnMenuItemClicked() {
-        _binding!!.toolBar.setOnMenuItemClickListener {
+        binding.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_settings -> {
                     Toast.makeText(context,"Soon",Toast.LENGTH_LONG).show()
@@ -53,7 +47,7 @@ class mainFragment : Fragment() {
             }
 
         }
-        _binding!!.toolBar.menu.getItem(0).actionView.setOnClickListener {
+        binding.toolBar.menu.getItem(0).actionView.setOnClickListener {
             Toast.makeText(context,"Soon",Toast.LENGTH_LONG).show()
         }
 
