@@ -14,16 +14,23 @@
     <!--  left shadow -->
 
     <!--  right shadow -->
-
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="180"
+                android:centerX="0.2"
+                android:centerColor="#00FFFFFF"
+                android:startColor="#40000000" />
+        </shape>
+    </item>
     <!--  top shadow -->
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:angle="270"
-                android:centerColor="#00FF0000"
-                android:centerY="0.2"
-                android:endColor="#03000000"
-                android:startColor="#80000000" />
+                android:centerY="0.4"
+                android:centerColor="#00FFFFFF"
+                android:startColor="#59000000" />
         </shape>
     </item>
     <!--  bottom shadow -->
@@ -31,10 +38,10 @@
         <shape android:shape="rectangle">
             <gradient
                 android:angle="90"
-                android:centerColor="#00FF0000"
-                android:centerY="0.3"
-                android:endColor="#03000000"
-                android:startColor="#80000000" />
+                android:centerY="0.6"
+                android:type="linear"
+                android:centerColor="#00FFFFFF"
+                android:startColor="#59000000" />
         </shape>
     </item>
 </layer-list>

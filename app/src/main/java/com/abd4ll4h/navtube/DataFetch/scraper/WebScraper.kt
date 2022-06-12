@@ -2,28 +2,25 @@ package com.abd4ll4h.navtube.DataFetch.scraper
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.Build
-import android.os.Handler
 import android.util.Log
-import android.view.View
 import android.webkit.*
+import com.abd4ll4h.navtube.DataFetch.scraper.keyText.keyText
 
 
 @SuppressLint("SetJavaScriptEnabled,unused")
-open class WebScraper(private val context: Context) {
+class WebScraper(private val context: Context, callBack:UrlCallBack) {
 
     private val web: WebView
 
     @Volatile
     private var htmlBool = false
     private var Html: String? = null
-
+    var isFirstLoad = true
     @Volatile
     private var gotElementText = true
     private var elementText: String? = null
     private var URL: String? = null
-    private val userAgent: String
+    val userAgent: String
     fun setUserAgentToDesktop(desktop: Boolean) {
         if (desktop) {
             val osString = userAgent.substring(userAgent.indexOf("("), userAgent.indexOf(")") + 1)
@@ -182,19 +179,27 @@ open class WebScraper(private val context: Context) {
                 view: WebView?,
                 request: WebResourceRequest?
             ): WebResourceResponse? {
-                Log.i("urlChecking",request?.url.toString())
+                if (request!!.url.toString().contains("https://cse.google.com/cse/element/v1")){
+                    callBack.getTokenUrl(request.url)
+                }
+
                 return super.shouldInterceptRequest(view, request)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
+
+                if (isFirstLoad) {
+                    val el1: Element = this@WebScraper.findElementByTagName("input")
+                    val el2: Element = this@WebScraper.findElementByTagName("button")
+                    el1.text = keyText
+                    el2.click()
+
+                    isFirstLoad=false
+                }
                 super.onPageFinished(view, url)
-                val el1: Element = this@WebScraper.findElementByXpath("//*[@id=\"gs_tti50\"]")
-                val el2: Element = this@WebScraper.findElementByXpath("/html/body/div/div[1]/div/form/table/tbody/tr/td[2]")
-                el1.text = "que"
-                el2.click()
-                val el3: Element = this@WebScraper.findElementById("result")
-                Log.i("urlChecking",el3.value)
+
             }
+
         }
 
     }
