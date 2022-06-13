@@ -61,6 +61,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#F1F8F9"
                 tool:text="Morbi aliquam velit" />
 
 
@@ -77,6 +79,8 @@
             android:layout_toStartOf="@id/iconLyout"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textStyle="bold"
+            android:textColor="#F1F8F9"
             tool:text="Morbi aliquam velit tellus, sed volutpat lorem fringilla etMorbi aliquam velit tellus, sed volutpat lorem fringilla et" />
 
 
@@ -96,14 +100,17 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
-
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/more_option"
                 android:src="@drawable/ic_card_more"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:focusable="true"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                />
 
             <ImageButton
                 android:id="@+id/iconPlay"
@@ -114,7 +121,9 @@
                 android:src="@drawable/ic_play_circle"
                 app:layout_constraintBottom_toTopOf="@id/iconCommunity"
                 app:layout_constraintEnd_toEndOf="parent"
-
+                android:focusable="true"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iconMore" />
 
@@ -129,8 +138,11 @@
                 app:layout_constraintBottom_toTopOf="@id/iconFav"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:focusable="true"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/iconPlay"
-                app:layout_constraintVertical_bias="0.23000002" />
+                 />
 
             <ImageButton
                 android:id="@+id/iconFav"
@@ -143,6 +155,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:focusable="true"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/iconCommunity" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

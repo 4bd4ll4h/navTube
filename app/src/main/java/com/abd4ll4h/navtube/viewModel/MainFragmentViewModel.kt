@@ -1,34 +1,51 @@
 package com.abd4ll4h.navtube.viewModel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
 import com.abd4ll4h.navtube.DataFetch.Repository
 import com.abd4ll4h.navtube.DataFetch.Response
 import com.abd4ll4h.navtube.DataFetch.VideoTable
 import com.abd4ll4h.navtube.DataFetch.scraper.keyText
-import kotlinx.coroutines.*
 
 class MainFragmentViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = Repository(application)
-    private lateinit var videoItem: LiveData<Response<ArrayList<VideoTable>>>
+    private lateinit var videoItem: MutableLiveData<ArrayList<VideoTable>>
 
 
 
-    suspend fun getVideoItem():LiveData<Response<ArrayList<VideoTable>>>{
+    suspend fun getVideoItem():LiveData<ArrayList<VideoTable>>{
+        if(::videoItem.isInitialized)return videoItem
          repository.loadVidData(keyText.genrateID()).also {
-             videoItem =it
+             videoItem =it.data
              return videoItem }
 
     }
-    fun loadNewVideo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newItem = repository.loadVidData(keyText.genrateID())
-            if (newItem.value!!.status==Response.Status.SUCCESS&& newItem.value!!.data.isNotEmpty()){
-                videoItem.value!!.data.addAll(newItem.value!!.data)
-            }
-        }
+    suspend fun loadNewVideo() {
+
+            val response = repository.loadVidData(keyText.genrateID())
+            if(checkResponse(response))
+                videoItem.postValue(videoItem.value.also { it!!.addAll(response.data.value!!) })
+        else handleError(response.message)
+    }
+
+    suspend fun refreshList() {
+
+        repository.refreshData()
+        val response=repository.loadVidData(keyText.genrateID())
+        if (checkResponse(response))
+        {Log.i("sdaf","checking"+ response.data.value!!.size)
+        videoItem.postValue(response.data.value)}
+
+        else handleError(response.message)
+
+    }
+
+    private fun handleError(message: String?) {
+        Log.i("ErrorCheck", "message: $message")
+    }
+
+    fun checkResponse(response:Response<MutableLiveData<ArrayList<VideoTable>>>): Boolean {
+        return response.status==Response.Status.SUCCESS&& response.data.value!!.isNotEmpty()
     }
 }

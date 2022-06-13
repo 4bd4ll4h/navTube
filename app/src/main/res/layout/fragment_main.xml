@@ -19,10 +19,14 @@
         android:background="?android:colorPrimary"
         app:theme="@style/Base.Theme.NavTube"
         app:title="@string/app_name" />
-
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mainList"
         tools:listitem="@layout/main_card" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

@@ -16,14 +16,16 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 
 typealias SuspendedValue<T> = CompletableDeferred<T>
+
 class Scraper(context: Context) : UrlCallBack {
 
 
-    public fun <T> SuspendedValue(parent: Job? = null): SuspendedValue<T> = CompletableDeferred(parent)
-    fun <T> SuspendedValue<T>.set(t: T) = this.complete(t)
-    suspend fun <T> SuspendedValue<T>.get() : T = this.await()
-    private var url=CompletableDeferred<Uri>()
+    public fun <T> SuspendedValue(parent: Job? = null): SuspendedValue<T> =
+        CompletableDeferred(parent)
 
+    fun <T> SuspendedValue<T>.set(t: T) = this.complete(t)
+    suspend fun <T> SuspendedValue<T>.get(): T = this.await()
+    private var url = CompletableDeferred<Uri>()
 
 
     private val webScraper: WebScraper by lazy { WebScraper(context, this) }
@@ -41,31 +43,38 @@ class Scraper(context: Context) : UrlCallBack {
         webScraper.loadURL(" https://cse.google.com/cse?cx=52071d28291f34345")
     }
 
-    suspend fun loadData(query:String): MutableLiveData<Response<ArrayList<VideoTable>>> {
+    suspend fun loadData(query: String): Response<MutableLiveData<ArrayList<VideoTable>>> {
 
-        return withContext(Dispatchers.IO){
-            val data=MutableLiveData<Response<ArrayList<VideoTable>>>()
-            val mUrl=url.get().toString().replace(keyText.keyText,query)
-            Log.i("url@check",mUrl)
-            FuelManager.instance.baseHeaders=mapOf("User-Agent" to webScraper.userAgent)
-            val (request, response, result)=Fuel.get(mUrl).awaitStringResponseResult()
+        return withContext(Dispatchers.IO) {
+            val data = MutableLiveData<ArrayList<VideoTable>>()
+            val mUrl = url.get().toString().replace(keyText.keyText, query)
+            Log.i("url@check", mUrl)
+            FuelManager.instance.baseHeaders = mapOf("User-Agent" to webScraper.userAgent)
+            val (request, response, result) = Fuel.get(mUrl).awaitStringResponseResult()
             result.fold(
-
-                {success ->
-                    Log.i("check",success.substring(1,10))
-                    if(success.contains("\"currentPageIndex\":"))
-                        data.postValue( Response.success(jasonToVideoObj(success)))
-                    else data.postValue(Response.error("renew Token", ArrayList()))},
-                { error -> data.postValue(Response.error(error.response.responseMessage, ArrayList()))
+                { success ->
+                    Log.i("check", success.substring(1, 30))
+                    if (success.contains("\"currentPageIndex\":")) {
+                        data.postValue(jasonToVideoObj(success))
+                        return@withContext (Response.success(data))
+                    } else return@withContext (Response.error(
+                        "renew Token",
+                        MutableLiveData<ArrayList<VideoTable>>()
+                    ))
+                },
+                { error ->
+                    return@withContext (Response.error(
+                        error.message,
+                        MutableLiveData<ArrayList<VideoTable>>()
+                    ))
                 })
 
-            return@withContext(data)
         }
     }
 
 
     fun jasonToVideoObj(responseText: String): ArrayList<VideoTable> {
-        var  jasonText = responseText.replaceAfterLast('}', "")
+        var jasonText = responseText.replaceAfterLast('}', "")
         jasonText = jasonText.replaceBefore('{', "")
         val gson = Gson()
         val jsonVal = gson.fromJson(jasonText, JasonMap::class.java)
@@ -74,7 +83,7 @@ class Scraper(context: Context) : UrlCallBack {
             val list = mutableListOf<VideoTable>()
             for (result in jsonVal.results!!) {
                 with(result.richSnippet.videoobject) {
-                    if(result.richSnippet.person!=null&&result.richSnippet.videoobject!=null) {
+                    if (result.richSnippet.person != null && result.richSnippet.videoobject != null) {
                         val video: VideoTable = VideoTable(
                             videoid,
                             name,
@@ -90,7 +99,7 @@ class Scraper(context: Context) : UrlCallBack {
                             result.richSnippet.person.url,
                             datepublished = VideoTable.Converters().fromTimestamp(datepublished),
                             description = result.contentNoFormatting,
-                            channelThumbnail = result.richSnippet.cseThumbnail?.let {  it.channelThumbnail}
+                            channelThumbnail = result.richSnippet.cseThumbnail?.let { it.channelThumbnail }
                         )
                         list.add(video)
                     }
@@ -101,6 +110,12 @@ class Scraper(context: Context) : UrlCallBack {
             return list as ArrayList<VideoTable>
         }
         return ArrayList()
+    }
+
+    fun refresh() {
+        url = CompletableDeferred<Uri>()
+        webScraper.clearAll()
+        webScraper.reload()
     }
 
 

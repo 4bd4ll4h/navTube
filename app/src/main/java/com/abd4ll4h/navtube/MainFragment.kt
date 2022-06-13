@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.abd4ll4h.navtube.DataFetch.Response
 import com.abd4ll4h.navtube.DataFetch.VideoTable
@@ -25,14 +28,25 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    val viewModel: MainFragmentViewModel =
-        ViewModelProvider.AndroidViewModelFactory(requireActivity().application).create(MainFragmentViewModel::class.java)
+    val viewModel: MainFragmentViewModel by lazy {  ViewModelProvider.AndroidViewModelFactory(requireActivity().application).create(MainFragmentViewModel::class.java) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i("check","??????????????????view created")
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setOnMenuItemClicked()
+        super.onViewCreated(view, savedInstanceState)
 
         val listAdapter=MainListAdapter(requireContext().applicationContext,ArrayList<VideoTable>(),this)
 
@@ -42,23 +56,17 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
         binding.mainList.addItemDecoration(MarginItemDecoration(8))
         viewLifecycleOwner.lifecycleScope.launch  {
             viewModel.getVideoItem().observe(viewLifecycleOwner) {
-                if (it!!.status == Response.Status.SUCCESS)
-                {
-                    listAdapter.setList(it.data)
-                }else{
-                    Toast.makeText(context,it.message,Toast.LENGTH_LONG).show()
-                    Log.i("faild@check","massge:"+it.message.toString())
-                }
+                binding.swipeRefreshLayout.isRefreshing=false
+                    listAdapter.setList(it)
+                    Log.i("sdaf","checking Obs"+ it.size)
 
+                    }
+        }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewLifecycleOwner.lifecycleScope.launch  {
+                viewModel.refreshList()
             }
         }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setOnMenuItemClicked()
-        super.onViewCreated(view, savedInstanceState)
 
     }
 
@@ -108,4 +116,13 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
     override fun onReportOptionClicked(video: Int) {
         Toast.makeText(context, "Soon", Toast.LENGTH_LONG).show()
     }
+
+    override fun onListEnd() {
+        viewLifecycleOwner.lifecycleScope.launch  {
+            viewModel.loadNewVideo()
+        }
+    }
+
+
+
 }
