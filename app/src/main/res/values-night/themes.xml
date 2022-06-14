@@ -7,7 +7,7 @@
         <item name="android:windowBackground">@color/primaryDark</item>
         <item name="android:textColorSecondary">@color/unactiveDark</item>
         <item name="android:colorAccent">@color/primary</item>
-        <item name="android:popupMenuStyle">@style/myListPopupWindow</item>
+        <item name="actionOverflowMenuStyle">@style/myListPopupWindow</item>
 
     </style>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">

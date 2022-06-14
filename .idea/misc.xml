@@ -6,6 +6,7 @@
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.1" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/circle_image.xml" value="0.1575" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/dimen.xml" value="0.1575" />
+        <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/fab_state.xml" value="0.2105" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/ic_card_more.xml" value="0.1575" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/ic_card_public.xml" value="0.1575" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/ic_filter.xml" value="0.1575" />
@@ -21,11 +22,12 @@
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/nav_logo.xml" value="0.1575" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/drawable/popup_shape.xml" value="0.139" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/activity_main2.xml" value="0.1718683197947841" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/content_main.xml" value="0.209375" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/fragment_communtiy.xml" value="0.25" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/fragment_fav.xml" value="0.12696941612604262" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/fragment_first.xml" value="0.75" />
-        <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/fragment_main.xml" value="0.25" />
+        <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/fragment_main.xml" value="0.22" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/fragment_second.xml" value="0.12696941612604262" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/loading_item.xml" value="0.21501390176088972" />
         <entry key="..\:/Users/4bd4ll4h/AndroidStudioProjects/NavTube/app/src/main/res/layout/main_card.xml" value="0.25" />

@@ -2,30 +2,26 @@ package com.abd4ll4h.navtube
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen
-import com.abd4ll4h.navtube.databinding.ActivityMainBinding
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.abd4ll4h.navtube.databinding.ActivityMainBinding
 import java.util.*
 import kotlin.concurrent.schedule
+
 
 class MainActivity : AppCompatActivity() {
     var contentHasLoaded = false
     private val navController by lazy { findNavController(R.id.nav_host_fragment) }
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -39,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNavigationBar()
+        navBottomBehavior()
     }
     private fun startLoadingContent() {
         // For this example, the Timer delay represents awaiting a response from a network call
@@ -46,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             contentHasLoaded = true
         }
     }
+
 
     private fun setupSplashScreen(splashScreen: SplashScreen) {
         val content: View = findViewById(android.R.id.content)
@@ -75,21 +73,9 @@ class MainActivity : AppCompatActivity() {
             slideBack.start()
         }
     }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
@@ -98,5 +84,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationBar() {
         binding.bottomNavigationView.setupWithNavController(navController)
+    }
+    fun navBottomBehavior(){
+        binding.bottomNavigationView.setOnItemReselectedListener {
+            if (it.itemId == R.id.mainMenu) {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                with(navHostFragment!!.childFragmentManager.fragments[0] as MainFragment){
+                    smoothScrollToTop()
+                }
+            }
+        }
+
     }
 }
