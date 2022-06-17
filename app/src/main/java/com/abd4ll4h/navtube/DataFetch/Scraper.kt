@@ -82,8 +82,9 @@ class Scraper(context: Context) : UrlCallBack {
         if (jsonVal.results != null) {
             val list = mutableListOf<VideoTable>()
             for (result in jsonVal.results!!) {
+                if (result.richSnippet.person != null && result.richSnippet.videoobject != null) {
                 with(result.richSnippet.videoobject) {
-                    if (result.richSnippet.person != null && result.richSnippet.videoobject != null) {
+
                         val video: VideoTable = VideoTable(
                             videoid,
                             name,

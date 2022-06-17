@@ -50,8 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/nav_logo"
         app:maxImageSize="48dp"
-        app:backgroundTint="@color/fab_state"
-        android:backgroundTint="@color/fab_state"
+        app:backgroundTint="?android:colorPrimaryDark"
         app:tint="@null"
 
         />

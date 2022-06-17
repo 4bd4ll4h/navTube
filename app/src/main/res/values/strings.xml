@@ -23,5 +23,9 @@
     <string name="report">Report</string>
     <string name="report_discription">this option for reporting the video in case somthing wrong</string>
     <string name="button_to_start_play_the_list">button to start play the list</string>
+    <string name="i_m_feeling_lucky">I\'m feeling lucky</string>
+    <string name="look_what_i_found">Look what I found</string>
+    <string name="close_layout">close layout</string>
+    <string name="go_to_setting">Go to setting</string>
 
 </resources>

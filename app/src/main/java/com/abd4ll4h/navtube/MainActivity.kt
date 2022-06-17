@@ -1,7 +1,11 @@
 package com.abd4ll4h.navtube
 
 import android.animation.ObjectAnimator
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
@@ -12,6 +16,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.abd4ll4h.navtube.bubbleWidget.OverlayService
 import com.abd4ll4h.navtube.databinding.ActivityMainBinding
 import java.util.*
 import kotlin.concurrent.schedule
@@ -36,6 +41,31 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavigationBar()
         navBottomBehavior()
+        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+        Log.i("check@bubble","satrt")
+
+        if (!Settings.canDrawOverlays(this)) {
+            Log.i("check@bubble","check premisson")
+
+            startActivityForResult(intent, 101)
+        }else login()
+    }
+    fun login() {
+        Log.i("check@bubble","login")
+
+        if ( !OverlayService.initialized && Settings.canDrawOverlays(this)) {
+            Log.i("check@bubble","start login")
+
+            val service = Intent(this, OverlayService::class.java)
+            startService(service)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 101 && Settings.canDrawOverlays(this)) {
+            login()
+        }
     }
     private fun startLoadingContent() {
         // For this example, the Timer delay represents awaiting a response from a network call
