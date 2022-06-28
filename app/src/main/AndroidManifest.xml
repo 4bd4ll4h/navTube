@@ -29,6 +29,8 @@
         </activity>
         <service android:name=".bubbleWidget.OverlayService"
             android:exported="true"/>
+        <service android:name=".bubbleWidget.BubbleService"
+            android:exported="true"/>
     </application>
 
 </manifest>

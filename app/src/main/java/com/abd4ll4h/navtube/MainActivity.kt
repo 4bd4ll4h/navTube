@@ -16,6 +16,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.abd4ll4h.navtube.bubbleWidget.BubbleService
+import com.abd4ll4h.navtube.bubbleWidget.Content
 import com.abd4ll4h.navtube.bubbleWidget.OverlayService
 import com.abd4ll4h.navtube.databinding.ActivityMainBinding
 import java.util.*
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         if ( !OverlayService.initialized && Settings.canDrawOverlays(this)) {
             Log.i("check@bubble","start login")
 
-            val service = Intent(this, OverlayService::class.java)
+            val service = Intent(this, BubbleService::class.java)
             startService(service)
         }
     }

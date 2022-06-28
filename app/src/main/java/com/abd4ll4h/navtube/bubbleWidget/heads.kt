@@ -89,8 +89,8 @@ class Line(val x1: Double, val y1: Double, var x2: Double, var y2: Double) {
     }
 }
 
-class ChatHeads(context: Context) : View.OnTouchListener, FrameLayout(context) {
-    companion object {
+class ChatHeads(context: Context)  {
+   /* companion object {
         val CHAT_HEAD_OUT_OF_SCREEN_X: Int = dpToPx(10f)
         val CHAT_HEAD_SIZE: Int = dpToPx(62f)
         val CHAT_HEAD_PADDING: Int = dpToPx(6f)
@@ -145,7 +145,6 @@ class ChatHeads(context: Context) : View.OnTouchListener, FrameLayout(context) {
     private var velocityTracker: VelocityTracker? = null
 
     private var motionTracker = LinearLayout(context)
-    private var contentLayout = LinearLayout(context)
 
     private var detectedOutOfBounds = false
 
@@ -174,26 +173,18 @@ class ChatHeads(context: Context) : View.OnTouchListener, FrameLayout(context) {
         WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
         PixelFormat.TRANSLUCENT
     )
-    private var LinParams = WindowManager.LayoutParams(
-        WindowManager.LayoutParams.WRAP_CONTENT,
-        WindowManager.LayoutParams.WRAP_CONTENT,
-        getOverlayFlag(),
-        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-        PixelFormat.TRANSLUCENT
-    )
+
 
     init {
         params.gravity = Gravity.START or Gravity.TOP
         params.dimAmount = 0.7f
 
-        LinParams.gravity = Gravity.START or Gravity.TOP
-        LinParams.dimAmount = 0.7f
+        this.clipToPadding=false
 
         motionTrackerParams.gravity = Gravity.START or Gravity.TOP
 
         OverlayService.instance.windowManager.addView(motionTracker, motionTrackerParams)
         OverlayService.instance.windowManager.addView(this, params)
-        this.addView(content)
 
 
 
@@ -545,8 +536,8 @@ class ChatHeads(context: Context) : View.OnTouchListener, FrameLayout(context) {
             }
         }
     }
-
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+*/
+  /*  override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         val metrics = getScreenSize()
 
         if (topChatHead == null) return true
@@ -739,5 +730,5 @@ class ChatHeads(context: Context) : View.OnTouchListener, FrameLayout(context) {
         }
 
         return true
-    }
+    }*/
 }

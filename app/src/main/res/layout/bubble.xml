@@ -1,57 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/bubble_head"
-    android:layout_gravity="center_horizontal">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/bubble_avatar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/i_m_feeling_lucky"
-        android:elevation="8dp"
-        android:src="@drawable/ic_nav_small_logo"
-        app:civ_circle_background_color="@color/primary" />
+<RelativeLayout
+    android:id="@+id/remove_relativelayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:cardBackgroundColor="?android:colorPrimaryDark"
-        app:cardCornerRadius="35dp"
-        app:cardElevation="16dp">
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/remove_img"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_centerInParent="true"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:contentDescription="@string/go_to_setting"
-                android:id="@+id/Setting_button"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_margin="8dp"
-                android:background="@android:color/transparent"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="fitXY" />
-
-
-            <ImageButton
-                android:contentDescription="@string/close_layout"
-                android:id="@+id/close_button"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_margin="8dp"
-                android:background="@android:color/transparent"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="fitXY" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-
-
-</FrameLayout>
+</RelativeLayout>

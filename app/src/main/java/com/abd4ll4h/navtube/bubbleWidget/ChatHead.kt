@@ -1,156 +1,98 @@
 package com.abd4ll4h.navtube.bubbleWidget
 
-import android.graphics.Color
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.util.Log
-import android.view.Gravity
-import android.view.MotionEvent
+import android.util.AttributeSet
 import android.view.View
-import android.view.WindowManager
-import android.widget.*
 import com.abd4ll4h.navtube.R
-import com.facebook.rebound.*
+import com.facebook.rebound.Spring
+import com.facebook.rebound.SpringConfig
+import com.facebook.rebound.SpringListener
 import com.facebook.rebound.SpringSystem
-import kotlin.math.hypot
-import kotlin.math.pow
 
 
-class ChatHead(var chatHeads: ChatHeads): FrameLayout(chatHeads.context), View.OnTouchListener, SpringListener {
-    var params: WindowManager.LayoutParams = WindowManager.LayoutParams(
-        WindowManager.LayoutParams.WRAP_CONTENT,
-        WindowManager.LayoutParams.WRAP_CONTENT,
-        getOverlayFlag(),
-        0,
-        PixelFormat.TRANSLUCENT
-    )
+/**
+ * Created by karthikrk on 12/09/15.
+ */
+class ChatHead : View, SpringListener {
+    var mXSprings: Spring? = null
+    var mYSprings: Spring? = null
+    private val mPaint = Paint()
+    var mBitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher_round)
 
-    var springSystem: SpringSystem = SpringSystem.create()
-
-    var springX: Spring = springSystem.createSpring()
-    var springY: Spring = springSystem.createSpring()
-
-    private val paint = Paint()
-
-    private var initialX = 0.0f
-    private var initialY = 0.0f
-
-    private var initialTouchX = 0.0f
-    private var initialTouchY = 0.0f
-
-    private var moving = false
-
-
-
-    override fun onSpringEndStateChange(spring: Spring?) = Unit
-    override fun onSpringAtRest(spring: Spring?) = Unit
-    override fun onSpringActivate(spring: Spring?) = Unit
-
-    init {
-        params.gravity = Gravity.TOP or Gravity.START
-        params.x = 0
-        params.y = 0
-        params.width = ChatHeads.CHAT_HEAD_SIZE + 15
-        params.height = ChatHeads.CHAT_HEAD_SIZE + 30
-
-        val view = inflate(context, R.layout.bubble, this)
-
-
-        springX.addListener(object : SimpleSpringListener() {
-            override fun onSpringUpdate(spring: Spring) {
-                x = spring.currentValue.toFloat()
-            }
-        })
-
-        springX.springConfig = SpringConfigs.NOT_DRAGGING
-        springX.addListener(this)
-
-        springY.addListener(object : SimpleSpringListener() {
-            override fun onSpringUpdate(spring: Spring) {
-                y = spring.currentValue.toFloat()
-            }
-        })
-        springY.springConfig = SpringConfigs.NOT_DRAGGING
-        springY.addListener(this)
-
-        this.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
-
-        chatHeads.addView(this, params)
-
-        this.setOnTouchListener(this)
-
-
-        view.findViewById<ImageButton>(R.id.close_button).setImageResource(R.drawable.ic_baseline_close_24)
-        view.findViewById<ImageButton>(R.id.close_button).setImageResource(R.drawable.ic_outline_settings_24)
-
+    constructor(context: Context?) : super(context) {
+        intialize()
     }
 
-
-    override fun onSpringUpdate(spring: Spring) {
-        if (spring !== this.springX && spring !== this.springY) return
-        val totalVelocity = hypot(springX.velocity, springY.velocity).toInt()
-
-        chatHeads.onChatHeadSpringUpdate(this, spring, totalVelocity)
+    constructor(context: Context?, attributeSet: AttributeSet?) : super(context, attributeSet) {
+        intialize()
     }
 
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        val currentChatHead = chatHeads.chatHeads.find { it == v }!!
+    constructor(context: Context?, attributeSet: AttributeSet?, defStyle: Int) : super(
+        context,
+        attributeSet,
+        defStyle
+    ) {
+        intialize()
+    }
 
-        val metrics = getScreenSize()
-        Log.i("check@bubble","touch head")
-        when (event!!.action) {
-            MotionEvent.ACTION_DOWN -> {
-                initialX = x
-                initialY = y
-                initialTouchX = event.rawX
-                initialTouchY = event.rawY
+    private fun intialize() {
+        val ss = SpringSystem.create()
+        var s: Spring
+        s = ss.createSpring()
+        s.springConfig = MySpringConfig(200.0, if (0 == 0) 8.0 else (15 + 0 * 2).toDouble(), 0, true)
+        s.addListener(this)
+        mXSprings = s
+        s = ss.createSpring()
+        s.springConfig = MySpringConfig(200.0, if (0 == 0) 8.0 else (15 + 0 * 2).toDouble(), 0, false)
+        s.addListener(this)
+        mYSprings = s
+    }
 
-                scaleX = 0.92f
-                scaleY = 0.92f
-            }
-            MotionEvent.ACTION_UP -> {
-                Log.i("check@bubble","touch up button")
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        mXSprings!!.currentValue = (w / 2).toDouble()
+        mYSprings!!.currentValue = 0.0
+        mXSprings!!.endValue = (w / 2).toDouble()
+        mYSprings!!.endValue = (h / 2).toDouble()
+    }
 
-                if (!moving) {
-                    if (currentChatHead == chatHeads.activeChatHead) {
-                        chatHeads.collapse()
-                    } else {
-                        chatHeads.activeChatHead = currentChatHead
-                        chatHeads.updateActiveContent()
-                    }
-                } else {
-                    springX.endValue = metrics.widthPixels - width - 1 * (width + ChatHeads.CHAT_HEAD_EXPANDED_PADDING).toDouble()
-                    springY.endValue =  metrics.heightPixels - height.toDouble()- ChatHeads.CHAT_HEAD_EXPANDED_MARGIN_TOP
-
-                    if (this == chatHeads.activeChatHead) {
-                        chatHeads.content.showContent()
-                    }
-                }
-
-                scaleX = 1f
-                scaleY = 1f
-
-                moving = false
-            }
-            MotionEvent.ACTION_MOVE -> {
-                if (ChatHeads.distance(initialTouchX, event.rawX, initialTouchY, event.rawY) > ChatHeads.CHAT_HEAD_DRAG_TOLERANCE.pow(2) && !moving) {
-                    moving = true
-
-                    if (this == chatHeads.activeChatHead) {
-                        chatHeads.content.hideContent()
-                    }
-                }
-
-                if (moving) {
-                    springX.currentValue = initialX + (event.rawX - initialTouchX).toDouble()
-                    springY.currentValue = initialY + (event.rawY - initialTouchY).toDouble()
-                }
-            }
+    override fun onSpringActivate(s: Spring) {}
+    override fun onSpringAtRest(s: Spring) {}
+    override fun onSpringEndStateChange(s: Spring) {}
+    override fun onSpringUpdate(s: Spring) {
+        val cfg = s.springConfig as MySpringConfig
+        if (cfg.index < NUM_ELEMS - 1) {
+            val springs = if (cfg.horizontal) mXSprings else mYSprings
+            springs!!.endValue = s.currentValue
         }
+        if (cfg.index == 0) {
+            invalidate()
+        }
+    }
 
-        return true
+    override fun onDraw(canvas: Canvas) {
+        for (i in NUM_ELEMS - 1 downTo 0) {
+            mPaint.alpha = if (i == 0) 255 else 192 - i * 128 / NUM_ELEMS
+            canvas.drawBitmap(
+                mBitmap,
+                mXSprings!!.currentValue.toFloat() - mBitmap.width / 2,
+                mYSprings!!.currentValue.toFloat() - mBitmap.height / 2,
+                mPaint
+            )
+        }
+    }
+
+    internal inner class MySpringConfig(
+        tension: Double,
+        friction: Double,
+        var index: Int,
+        var horizontal: Boolean
+    ) :
+        SpringConfig(tension, friction)
+
+    companion object {
+        private const val NUM_ELEMS = 1
     }
 }

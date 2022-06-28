@@ -37,8 +37,8 @@ data class JasonMap(
 
     data class RichSnippet(
         //@SerializedName("cseImage") @Expose var cseImage: CseImage? = null,
-        @SerializedName("person") @Expose var person: Person,
-        @SerializedName("videoobject") @Expose var videoobject: Videoobject,
+        @SerializedName("person") @Expose var person: Person?,
+        @SerializedName("videoobject") @Expose var videoobject: Videoobject?,
         @SerializedName("cseThumbnail") @Expose var cseThumbnail: CseThumbnail
 
     )

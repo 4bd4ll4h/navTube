@@ -82,30 +82,32 @@ class Scraper(context: Context) : UrlCallBack {
         if (jsonVal.results != null) {
             val list = mutableListOf<VideoTable>()
             for (result in jsonVal.results!!) {
-                if (result.richSnippet.person != null && result.richSnippet.videoobject != null) {
-                with(result.richSnippet.videoobject) {
+                if (result.richSnippet !=null) {
+                    if (result.richSnippet.person != null && result.richSnippet.videoobject != null) {
+                        with(result.richSnippet.videoobject) {
 
-                        val video: VideoTable = VideoTable(
-                            videoid,
-                            name,
-                            isfamilyfriendly,
-                            VideoTable.Converters().fromTimestamp(uploaddate),
-                            duration,
-                            unlisted,
-                            paid,
-                            genre,
-                            interactioncount,
-                            thumbnailurl,
-                            result.richSnippet.person.name,
-                            result.richSnippet.person.url,
-                            datepublished = VideoTable.Converters().fromTimestamp(datepublished),
-                            description = result.contentNoFormatting,
-                            channelThumbnail = result.richSnippet.cseThumbnail?.let { it.channelThumbnail }
-                        )
-                        list.add(video)
+                            val video: VideoTable = VideoTable(
+                                this!!.videoid,
+                                name,
+                                isfamilyfriendly,
+                                VideoTable.Converters().fromTimestamp(uploaddate),
+                                duration,
+                                unlisted,
+                                paid,
+                                genre,
+                                interactioncount,
+                                thumbnailurl,
+                                result.richSnippet.person!!.name,
+                                result.richSnippet.person!!.url,
+                                datepublished = VideoTable.Converters()
+                                    .fromTimestamp(datepublished),
+                                description = result.contentNoFormatting,
+                                channelThumbnail = result.richSnippet.cseThumbnail?.let { it.channelThumbnail }
+                            )
+                            list.add(video)
+                        }
                     }
                 }
-
 
             }
             return list as ArrayList<VideoTable>
