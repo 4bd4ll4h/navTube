@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -18,7 +19,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.abd4ll4h.navtube.bubbleWidget.BubbleService
 import com.abd4ll4h.navtube.bubbleWidget.Content
-import com.abd4ll4h.navtube.bubbleWidget.OverlayService
 import com.abd4ll4h.navtube.databinding.ActivityMainBinding
 import java.util.*
 import kotlin.concurrent.schedule
@@ -55,11 +55,11 @@ class MainActivity : AppCompatActivity() {
     fun login() {
         Log.i("check@bubble","login")
 
-        if ( !OverlayService.initialized && Settings.canDrawOverlays(this)) {
+        if ( Settings.canDrawOverlays(this)) {
             Log.i("check@bubble","start login")
 
             val service = Intent(this, BubbleService::class.java)
-            startService(service)
+            ContextCompat.startForegroundService(this,service)
         }
     }
 

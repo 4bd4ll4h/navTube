@@ -2,10 +2,13 @@ package com.abd4ll4h.navtube.bubbleWidget
 
 import android.app.Application
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Canvas
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.view.Gravity
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.abd4ll4h.navtube.DataFetch.VideoTable
 import com.abd4ll4h.navtube.DataFetch.scraper.keyText
 import com.abd4ll4h.navtube.R
+import com.abd4ll4h.navtube.databinding.BubbleBinding
 import com.abd4ll4h.navtube.databinding.BubbleLayoutBinding
 import com.abd4ll4h.navtube.viewModel.MainFragmentViewModel
 import com.facebook.rebound.SimpleSpringListener
@@ -24,7 +28,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class BubbleLayoutContent(val layout: BubbleLayout):ConstraintLayout(layout.context1),SpringListener {
+class Bubble(val layout: BubbleLayout):ConstraintLayout(layout.context1),SpringListener {
     var springSystem: SpringSystem = SpringSystem.create()
 
     var springX: Spring = springSystem.createSpring()
@@ -37,15 +41,16 @@ class BubbleLayoutContent(val layout: BubbleLayout):ConstraintLayout(layout.cont
         0,
         PixelFormat.TRANSLUCENT
     )
-    lateinit var binding: BubbleLayoutBinding
+    lateinit var binding: BubbleBinding
 
     init {
         context.setTheme(R.style.Base_Theme_NavTube)
         this.clipToPadding=false
-        binding= BubbleLayoutBinding.bind(inflate(context, R.layout.bubble_layout, this))
+        binding= BubbleBinding.bind(inflate(context, R.layout.bubble, this))
         params.gravity = Gravity.BOTTOM or Gravity.END
 
         layout.addView(this,params)
+
 
         springX.addListener(object : SimpleSpringListener() {
             override fun onSpringUpdate(spring: Spring) {
@@ -94,5 +99,20 @@ class BubbleLayoutContent(val layout: BubbleLayout):ConstraintLayout(layout.cont
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(layout.context1,intent,null)
     }
+
+    fun showContent() {
+        binding.bubbleAvatar.visibility= GONE
+        binding.closeButton.visibility= VISIBLE
+        binding.SettingButton.visibility= VISIBLE
+
+    }
+
+    fun hideContent() {
+        binding.bubbleAvatar.visibility= VISIBLE
+        binding.closeButton.visibility= GONE
+        binding.SettingButton.visibility= GONE
+
+    }
+
 
 }

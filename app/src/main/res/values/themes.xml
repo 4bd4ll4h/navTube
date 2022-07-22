@@ -1,28 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.NavTube" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="android:textColorPrimary">@color/primaryDark</item>
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:colorAccent">@color/primaryDark</item>
+        <item name="colorAccent">@color/primaryDark</item>
         <item name="android:textColorSecondary">@color/unactive</item>
         <item name="chipGroupStyle">@style/chipsGroup</item>
         <item name="actionOverflowMenuStyle">@style/myListPopupWindow</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
 
     </style>
 
-    <style name="Theme.NavTube" parent="Base.Theme.NavTube" />
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
-        <item name="postSplashScreenTheme">@style/Theme.NavTube</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.NavTube</item>
         <item name="windowSplashScreenBackground">@color/primary</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
-
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 
-    <style name="mainCard" >
+    <style name="mainCard">
         <item name="android:popupMenuStyle">@style/myListPopupWindow</item>
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.01</item>
@@ -37,6 +38,28 @@
 
     </style>
 
+    <style name="PopupDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+        <item name="colorPrimary">@color/primaryDark</item>
+        <item name="colorOnSurface">@color/dialogBackground</item>
+        <item name="colorSurface">@color/primary</item>
+    </style>
+
+
+
+    <style name="DialogCorners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">14dp</item>
+    </style>
+
+    <style name="ImageView.Corner" parent="">
+        <item name="cornerSizeTopRight">14dp</item>
+        <item name="cornerSizeTopLeft">14dp</item>
+        <item name="cornerSizeBottomLeft">14dp</item>
+        <item name="cornerSizeBottomRight">14dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
     <declare-styleable name="ShadowLayout">
         <attr name="sl_shadowed" format="boolean" />
         <attr name="sl_shadow_distance" format="dimension" />
@@ -44,4 +67,5 @@
         <attr name="sl_shadow_radius" format="dimension" />
         <attr name="sl_shadow_color" format="color" />
     </declare-styleable>
+
 </resources>

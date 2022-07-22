@@ -4,6 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/bubble_root"
     android:layout_width="wrap_content"
+    android:clipChildren="false"
     android:layout_height="wrap_content"
     android:clipToPadding="false">
 
@@ -12,14 +13,11 @@
         android:id="@+id/bubble_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:layout_marginBottom="16dp"
         android:padding="8dp"
         app:cardBackgroundColor="?android:colorPrimary"
         app:cardCornerRadius="20dp"
         app:cardElevation="16dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/bubble_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,7 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:elevation="4dp">
+                android:elevation="4dp"
+                tool:visibility="gone">
 
                 <ImageView
                     android:id="@+id/buble_thumbnail"
@@ -44,7 +43,8 @@
                     app:layout_constraintDimensionRatio="16:9"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tool:visibility="visible" />
 
                 <TextView
                     android:id="@+id/title"
@@ -59,7 +59,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/buble_thumbnail"
-                    tool:text="Morbi aliquam velit tellus, sed volutpat lorem fringilla etMorbi aliquam velit tellus, sed volutpat lorem fringilla et" />
+                    tool:text="Morbi aliquam velit tellus, sed volutpat lorem fringilla etMorbi aliquam velit tellus, sed volutpat lorem fringilla et"
+                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -151,59 +152,5 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/bubble_circle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="?android:colorPrimaryDark"
-        app:cardCornerRadius="35dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bubble_layout">
-
-        <LinearLayout
-            android:id="@+id/bubble_buttons_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:padding="4dp">
-
-            <ImageButton
-                android:id="@+id/Setting_button"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_margin="18dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/go_to_setting"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_outline_settings_24"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/close_button"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_margin="16dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/close_layout"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_baseline_close_24"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/bubble_avatar"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/i_m_feeling_lucky"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="fitXY"
-                android:src="@drawable/nav_logo" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

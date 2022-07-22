@@ -1,19 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.NavTube" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:colorPrimaryDark">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
         <item name="android:textColorPrimary">@color/primary</item>
-        <item name="android:colorPrimary">@color/primaryDark</item>
+        <item name="colorPrimary">@color/primaryDark</item>
         <item name="android:windowBackground">@color/primaryDark</item>
         <item name="android:textColorSecondary">@color/unactiveDark</item>
-        <item name="android:colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
         <item name="actionOverflowMenuStyle">@style/myListPopupWindow</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
 
     </style>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
-        <item name="postSplashScreenTheme">@style/Theme.NavTube</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.NavTube</item>
         <item name="windowSplashScreenBackground">@color/primaryDark</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+    <style name="PopupDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnSurface">@color/dialogBackgroundDark</item>
+        <item name="colorSurface">@color/primaryDark</item>
     </style>
 </resources>

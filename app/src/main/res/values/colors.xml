@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="dialogBackgroundDark">#80F1F8F9</color>
+    <color name="dialogBackground">#80142D30</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#F1F8F9</color>
     <color name="primaryDark">#142D30</color>
     <color name="unactive">#80142D30</color>
     <color name="unactiveDark">#86F1F8F9</color>
     <color name="primaryDarkLessShade">#306C73</color>
+
 
 
 </resources>

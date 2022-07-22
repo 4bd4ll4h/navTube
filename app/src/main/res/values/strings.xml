@@ -27,5 +27,12 @@
     <string name="look_what_i_found">Look what I found</string>
     <string name="close_layout">close layout</string>
     <string name="go_to_setting">Go to setting</string>
+    <string name="search">Search</string>
+    <string name="add_labels">Add labels ;)</string>
+    <string name="save">save</string>
+    <string name="label_name">Label Name</string>
+    <string name="cancel">Cancel</string>
+
+
 
 </resources>
