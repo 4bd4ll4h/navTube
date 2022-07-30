@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Label(
-    @PrimaryKey val id :Int,
-    @ColumnInfo val label :String
+    @PrimaryKey(autoGenerate = true) val id :Int=0,
+    @ColumnInfo val label :String,
+    var isChecked :Boolean =false
 )

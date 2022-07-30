@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.abd4ll4h.navtube.dataBase.tables.FavVideo
 import com.abd4ll4h.navtube.dataBase.tables.Label
 
-@Database(entities = [FavVideo::class,Label::class], version = 1)
+@Database(entities = [FavVideo::class,Label::class], version = 1, exportSchema =false )
 @TypeConverters(FavVideo.DateConverter::class)
 abstract class AppDB: RoomDatabase() {
 

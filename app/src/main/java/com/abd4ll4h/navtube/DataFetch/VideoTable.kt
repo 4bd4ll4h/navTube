@@ -1,7 +1,7 @@
 package com.abd4ll4h.navtube.DataFetch
 
 
-import android.util.Log
+import com.abd4ll4h.navtube.dataBase.tables.FavVideo
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,11 +23,15 @@ data class VideoTable(
     var channelUrl: String?,
     var channelThumbnail: String? = null,
     var status: Int = 0,
-    var isLiked: Boolean = false,
+    var isFav: Boolean = false,
 
     var datepublished: Date?,
     var description: String? = null
 ) {
+    fun toFavObj(): FavVideo {
+        return FavVideo(id,title,isfamilyfriendly,uploaddate,duration,unlisted,paid,genre,interactioncount,
+        thumbnailurl,creator,channelUrl,channelThumbnail,status,isFav,datepublished,description, label = null)
+    }
 
 
     class Converters() {

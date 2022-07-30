@@ -10,6 +10,7 @@ import java.util.*
     childColumns = ["label"],
     onDelete = CASCADE)]
 )
+
 data class FavVideo(@PrimaryKey val id: String,
                     @ColumnInfo val title: String,
                     @ColumnInfo var isfamilyfriendly: Boolean?,
@@ -24,10 +25,10 @@ data class FavVideo(@PrimaryKey val id: String,
                     @ColumnInfo var channelUrl: String?,
                     @ColumnInfo var channelThumbnail: String? = null,
                     @ColumnInfo var status: Int = 0,
-                    @ColumnInfo var isLiked: Boolean = false,
+                    @ColumnInfo var isFav: Boolean = false,
                     @ColumnInfo var datepublished: Date?,
                     @ColumnInfo var description: String? = null,
-                    @ColumnInfo(index = true) var label: Int
+                    @ColumnInfo(index = true) var label: Int?
                     ) {
 
     object DateConverter {

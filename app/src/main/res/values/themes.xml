@@ -10,7 +10,8 @@
         <item name="chipGroupStyle">@style/chipsGroup</item>
         <item name="actionOverflowMenuStyle">@style/myListPopupWindow</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
-
+        <item name="searchViewStyle">@style/searchViewStyle</item>
+        <item name="searchEditTextBackgroundColor">@color/white</item>
 
     </style>
 
@@ -53,10 +54,10 @@
     </style>
 
     <style name="ImageView.Corner" parent="">
-        <item name="cornerSizeTopRight">14dp</item>
-        <item name="cornerSizeTopLeft">14dp</item>
-        <item name="cornerSizeBottomLeft">14dp</item>
-        <item name="cornerSizeBottomRight">14dp</item>
+        <item name="cornerSizeTopRight">@dimen/corner_radius</item>
+        <item name="cornerSizeTopLeft">@dimen/corner_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/corner_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/corner_radius</item>
         <item name="cornerFamily">rounded</item>
     </style>
 
@@ -66,6 +67,14 @@
         <attr name="sl_shadow_angle" format="integer" />
         <attr name="sl_shadow_radius" format="dimension" />
         <attr name="sl_shadow_color" format="color" />
+        <attr name="searchEditTextBackgroundColor" format="color" />
     </declare-styleable>
+    <style name="searchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="defaultQueryHint">@string/search_hint</item>
+        <item name="searchHintIcon">@null</item>
+        <item name="queryBackground">@drawable/search_edittext_background</item>
+        <item name="searchIcon">@drawable/ic_search</item>
+
+    </style>
 
 </resources>

@@ -7,9 +7,11 @@
         <item name="android:windowBackground">@color/primaryDark</item>
         <item name="android:textColorSecondary">@color/unactiveDark</item>
         <item name="colorAccent">@color/primary</item>
+        <item name="chipGroupStyle">@style/chipsGroup</item>
         <item name="actionOverflowMenuStyle">@style/myListPopupWindow</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
-
+        <item name="searchViewStyle">@style/searchViewStyle</item>
+        <item name="searchEditTextBackgroundColor">@color/searchViewBackground</item>
     </style>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
@@ -23,5 +25,12 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnSurface">@color/dialogBackgroundDark</item>
         <item name="colorSurface">@color/primaryDark</item>
+    </style>
+    <style name="searchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="defaultQueryHint">@string/search_hint</item>
+        <item name="searchHintIcon">@null</item>
+        <item name="queryBackground">@drawable/search_edittext_background</item>
+
+
     </style>
 </resources>

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:contentDescription="@string/video_thumbnail"
-        android:scaleType="fitXY"
+        android:scaleType="centerInside"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:layout_height="0dp"
         android:background="@color/primaryDarkLessShade"
         android:contentDescription="@string/video_thumbnail"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -51,7 +51,6 @@
                 android:visibility="gone"
                 tool:src="@tools:sample/backgrounds/scenic"
                 tool:visibility="visible" />
-
             <TextView
                 android:id="@+id/channelName"
                 android:layout_width="wrap_content"
@@ -60,10 +59,12 @@
                 android:layout_margin="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:textColor="#F1F8F9"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#F1F8F9"
                 tool:text="Morbi aliquam velit" />
+
+
 
 
         </LinearLayout>
@@ -102,28 +103,27 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
+                android:clickable="true"
                 android:contentDescription="@string/more_option"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/ic_card_more"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:focusable="true"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/iconPlay"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
+                android:clickable="true"
                 android:contentDescription="@string/play_video"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/ic_play_circle"
                 app:layout_constraintBottom_toTopOf="@id/iconCommunity"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:focusable="true"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iconMore" />
 
@@ -132,17 +132,16 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
+                android:clickable="true"
                 android:contentDescription="@string/share_to_community"
                 android:elevation="40dp"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/ic_card_public"
                 app:layout_constraintBottom_toTopOf="@id/iconFav"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:focusable="true"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:layout_constraintTop_toBottomOf="@+id/iconPlay"
-                 />
+                app:layout_constraintTop_toBottomOf="@+id/iconPlay" />
 
             <ImageButton
                 android:id="@+id/iconFav"
@@ -150,16 +149,59 @@
                 android:layout_height="48dp"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
+                android:clickable="true"
                 android:contentDescription="@string/favorite_the_video"
-                android:src="@drawable/ic_card_favorite"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/fav_icon_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:focusable="true"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/iconCommunity" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/label_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tool:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relativeLayout">
+
+        <ImageButton
+            android:id="@+id/addLabel"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/add_button_shape"
+            android:elevation="16dp"
+            android:src="@drawable/ic_add"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fav_toolBar" />
+
+        <TextView
+            android:id="@+id/noLabel"
+            tool:layout_editor_absoluteY="81dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/add_labels"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toEndOf="@+id/imageButton" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/label_list"
+            tool:listitem="@layout/label_ship"
+            tool:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

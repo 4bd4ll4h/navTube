@@ -36,27 +36,24 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
 
-        startLoadingContent()
-        setupSplashScreen(splashScreen)
+        //startLoadingContent()
+        //setupSplashScreen(splashScreen)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupBottomNavigationBar()
         navBottomBehavior()
         val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-        Log.i("check@bubble","satrt")
 
         if (!Settings.canDrawOverlays(this)) {
-            Log.i("check@bubble","check premisson")
+
 
             startActivityForResult(intent, 101)
         }else login()
     }
-    fun login() {
-        Log.i("check@bubble","login")
+    private fun login() {
 
         if ( Settings.canDrawOverlays(this)) {
-            Log.i("check@bubble","start login")
 
             val service = Intent(this, BubbleService::class.java)
             ContextCompat.startForegroundService(this,service)
@@ -71,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun startLoadingContent() {
         // For this example, the Timer delay represents awaiting a response from a network call
-        Timer().schedule(3000){
+        Timer().schedule(1000){
             contentHasLoaded = true
         }
     }
@@ -117,7 +114,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationBar() {
         binding.bottomNavigationView.setupWithNavController(navController)
     }
-    fun navBottomBehavior(){
+    private fun navBottomBehavior(){
         binding.bottomNavigationView.setOnItemReselectedListener {
             if (it.itemId == R.id.mainMenu) {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)

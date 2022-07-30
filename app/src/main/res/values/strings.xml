@@ -32,7 +32,10 @@
     <string name="save">save</string>
     <string name="label_name">Label Name</string>
     <string name="cancel">Cancel</string>
-
+    <string name="label">Labels</string>
+    <string name="ok">OK</string>
+    <string name="search_hint">Search favourites…</string>
+    <string name="new_label_or_tag">this button is for creating new label or tag</string>
 
 
 </resources>
