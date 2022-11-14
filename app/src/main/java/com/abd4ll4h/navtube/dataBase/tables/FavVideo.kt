@@ -2,6 +2,8 @@ package com.abd4ll4h.navtube.dataBase.tables
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Entity(foreignKeys = [ForeignKey(
@@ -28,7 +30,7 @@ data class FavVideo(@PrimaryKey val id: String,
                     @ColumnInfo var isFav: Boolean = false,
                     @ColumnInfo var datepublished: Date?,
                     @ColumnInfo var description: String? = null,
-                    @ColumnInfo(index = true) var label: Int?
+                    @ColumnInfo(index = true) var label: Int?=null
                     ) {
 
     object DateConverter {
@@ -40,6 +42,18 @@ data class FavVideo(@PrimaryKey val id: String,
         @TypeConverter
         fun fromDate(date: Date?): Long? {
             return date?.time
+        }
+
+        fun fromTimestamp(value: String?): Date? {
+            try {
+                return SimpleDateFormat(
+                    "yyyy-MM-dd",
+                    Locale.ENGLISH
+                ).parse(value)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            return Date(value)
         }
     }
 }

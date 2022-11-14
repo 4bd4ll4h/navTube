@@ -36,6 +36,40 @@
     <string name="ok">OK</string>
     <string name="search_hint">Search favourites…</string>
     <string name="new_label_or_tag">this button is for creating new label or tag</string>
+    <string name="clear_all">clear all</string>
+    <string name="delete_all">delete all</string>
+    <string name="clear_label">clear label</string>
+    <string name="delete_label">delete label</string>
+    <string name="rename_label">rename label</string>
+    <string name="move_this_video_to_a_different_label">move this video to a different label</string>
+    <string name="move">Move</string>
+    <string name="selectLabel">Select label</string>
+    <string name="no_favorites_found">No Favorites Found</string>
+    <string name="no_fav_detailes">Tap on the Heart Button of any video to add it on the favourite list OR DOUBLE TAP on the bubble widget</string>
+    <string name="no_results">NO Results Found</string>
+    <string name="no_label_make_label">There is No labels Make a Label First</string>
+    <string name="loadingVideo">Loading Video list...</string>
+    <string name="look_what_I_found">\"Look what I found @NavTube \"</string>
+    <string name="share_via">Share via</string>
+    <string name="show">show</string>
+    <string name="hide">hide</string>
+    <string name="Close">Close</string>
+    <string name="no_Internet">There is no Internet Connection</string>
+    <string name="NoVideoPleseResfresh">No Videos on the list please Refresh</string>
+    <string name="error_connection">an Error has occur, check your connection and try again</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="finish">Finish</string>
+    <string name="app_features">App Features slides</string>
+    <string name="screen_one_title">Be The Captain 🚢, Explore and Unlock ⚓️ 🏴‍☠️</string>
+    <string name="screen_one_text">With NavTube you can break the chain of YouTube algorithm to explore and watch new content that might interest you</string>
+    <string name="favor_videos_and_organize_by_labels">Favor videos and organize by labels 🏷</string>
+    <string name="sc_title_3">Ues NavBubble to keep watching on YouTube</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="screen_two_text">Use NavTube you can fav your YouTube videos and organize them By creating labels which allows to  update, delete videos by labels and search them</string>
+    <string name="screen_three_text">Use the NavBubble to get new videos while watching YouTube with one click :) and double click to favor the video and long press to see the title, thumbnail of the video and to add label to the video</string>
+    <string name="error_no_list">Error Couldn\'t load video list</string>
+    <string name="no_main_list_detiale">Check your internet connection and pull to refresh</string>
 
 
 </resources>

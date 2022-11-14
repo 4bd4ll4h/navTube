@@ -28,7 +28,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fav_toolBar">
-
+<LinearLayout
+    android:id="@+id/noListLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:visibility="gone"
+    android:orientation="vertical">
+        <TextView
+            android:id="@+id/noList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_favorites_found"
+            android:layout_margin="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_fav_detailes"
+            android:layout_marginHorizontal="16dp"
+            />
+</LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fav_list"
             android:layout_width="match_parent"
@@ -39,18 +61,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            tools:visibility="gone"
             tools:listitem="@layout/fav_card_item" />
 
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@id/fav_list"
                 app:layout_constraintEnd_toEndOf="parent"

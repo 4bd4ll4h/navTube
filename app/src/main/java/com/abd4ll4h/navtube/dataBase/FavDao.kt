@@ -19,21 +19,40 @@ interface FavDao {
 
     @Insert(onConflict = REPLACE)
     suspend fun insertFav(videoTable: FavVideo):Long
+
     @Delete
     fun deleteFav(videoTable: FavVideo)
 
     @Update(onConflict = REPLACE)
     fun updateFav(video: FavVideo)
 
-    @Query("select * from FavVideo")
+    @Query("select * from FavVideo where isFav = 1 ")
     fun  getFav(): Flow<List<FavVideo>>
 
     @Query("select * from  FavVideo where label IN (:labelID)")
     fun  getFavFilter(labelID: IntArray): Flow<List<FavVideo>>
 
-    @Query("select * from FavVideo where title  like '%' || :text || '%'")
+    @Query("select * from FavVideo where title like '%' || :text || '%' or creator like '%' || :text || '%'")
     fun searchFavAll(text: String): Flow<List<FavVideo>>
 
     @Query("select * from FavVideo where label IN (:labelID) and (title like '%' || :text || '%' or creator like '%' || :text || '%') ")
     fun searchFavWithLabel(text: String, labelID: IntArray): Flow<List<FavVideo>>
+
+    @Delete
+    fun deleteAllFav(list: List<Label>)
+
+    @Delete
+    fun clearAllFav(list: List<FavVideo>)
+
+    @Query(" delete  from Label where  id = :id ")
+    fun deleteLabel(id: Int)
+
+    @Query("delete from FavVideo where label = :labelID")
+    fun clearLabel(labelID: Int)
+
+    @Update(onConflict = REPLACE)
+    fun updateLabel(label: Label)
+
+    @Query("delete from FavVideo ")
+    fun deleteAllFavWithoutLabel()
 }

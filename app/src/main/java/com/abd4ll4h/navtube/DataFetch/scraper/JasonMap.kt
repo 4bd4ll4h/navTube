@@ -42,7 +42,7 @@ data class JasonMap(
         @SerializedName("cseThumbnail") @Expose var cseThumbnail: CseThumbnail
 
     )
-data class CseThumbnail(@SerializedName("src") @Expose var channelThumbnail: String,
+data class CseThumbnail(@SerializedName("src") @Expose var channelThumbnail: String?,
                         @SerializedName("width") @Expose var width: Int,
                         @SerializedName("height") @Expose var height: Int,)
     data class Videoobject(

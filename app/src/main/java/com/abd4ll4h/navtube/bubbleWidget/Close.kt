@@ -67,9 +67,9 @@ class Close(var bubble: BubbleLayout): View(bubble.context) {
     }
 
     fun onPositionUpdate() {
-        if (bubble.closeCaptured && bubble.bubbleLayoutContent != null) {
-            bubble.bubbleLayoutContent.springX.endValue = springX.endValue + width / 2 - bubble.bubbleLayoutContent.params.width / 2 + 2
-            bubble.bubbleLayoutContent.springY.endValue = springY.endValue + height / 2 - bubble.bubbleLayoutContent.params.height / 2 + 2
+        if (bubble.closeCaptured && bubble.bubble != null) {
+            bubble.bubble.springX.endValue = springX.endValue + width / 2 - bubble.bubble.params.width / 2 + 2
+            bubble.bubble.springY.endValue = springY.endValue + height / 2 - bubble.bubble.params.height / 2 + 2
         }
     }
 
@@ -83,8 +83,8 @@ class Close(var bubble: BubbleLayout): View(bubble.context) {
             override fun onSpringUpdate(spring: Spring) {
                 y = spring.currentValue.toFloat()
 
-                if (bubble.closeCaptured && bubble.wasMoving && bubble.bubbleLayoutContent != null) {
-                    bubble.bubbleLayoutContent.springY.currentValue = spring.currentValue
+                if (bubble.closeCaptured && bubble.wasMoving && bubble.bubble != null) {
+                    bubble.bubble.springY.currentValue = spring.currentValue
                 }
 
                 onPositionUpdate()

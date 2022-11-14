@@ -1,15 +1,11 @@
 package com.abd4ll4h.navtube
 
 import android.app.Dialog
-import android.app.SearchManager
-import android.app.SearchableInfo
 import android.content.Context
-import android.content.Context.SEARCH_SERVICE
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,23 +13,26 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.abd4ll4h.navtube.DataFetch.scraper.keyText
+import com.abd4ll4h.navtube.DataFetch.scraper.KeyText
 import com.abd4ll4h.navtube.adapters.FavListAdapter
 import com.abd4ll4h.navtube.adapters.LabelListAdapter
+import com.abd4ll4h.navtube.bubbleWidget.BubbleService
 import com.abd4ll4h.navtube.bubbleWidget.dpToPx
 import com.abd4ll4h.navtube.dataBase.tables.FavVideo
 import com.abd4ll4h.navtube.dataBase.tables.Label
 import com.abd4ll4h.navtube.databinding.FragmentFavBinding
+import com.abd4ll4h.navtube.utils.MarginItemDecoration
 import com.abd4ll4h.navtube.utils.getDimensionFromAttribute
 import com.abd4ll4h.navtube.viewModel.FavFragmentViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
@@ -65,32 +64,64 @@ class FavFragment : Fragment(), LabelListAdapter.ItemClick ,FavListAdapter.ItemC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setOnMenuItemClicked()
+        setToolBar()
+
         binding.addLabel.setOnClickListener { addLabelDialog(requireContext()) }
-        val listAdapter = LabelListAdapter(this, listOf(),viewModel.checkedLabelList)
+        val listAdapter = LabelListAdapter(this, listOf(),viewModel.checkedLabelList.value)
         binding.labelList.adapter = listAdapter
         binding.labelList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.labelList.setHasFixedSize(false)
-        viewModel.labelsList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                binding.noLabel.visibility = View.GONE
+        lifecycleScope.launch {
+            viewModel.labelsList.collect{
 
-                listAdapter.submitList(it.reversed(),viewModel.checkedLabelList)
-                binding.labelList.scrollToPosition(0)
-            }else binding.noLabel.visibility=View.VISIBLE
+                if (it.isNotEmpty()) {
+                    setToolBar()
+                    binding.noLabel.visibility = View.GONE
+                    listAdapter.submitList(it.reversed(),viewModel.checkedLabelList.value)
+                    binding.labelList.visibility=View.VISIBLE
+                    binding.labelList.scrollToPosition(0)
+                }else {
+                    binding.noLabel.visibility=View.VISIBLE
+                    listAdapter.submitList(it,viewModel.checkedLabelList.value)
+                    binding.labelList.visibility=View.GONE
+                }
+            }
         }
+
         val favListAdapter=FavListAdapter(this)
         binding.favList.adapter = favListAdapter
         binding.favList.layoutManager = LinearLayoutManager(requireContext())
         binding.favList.setHasFixedSize(false)
         binding.favList.addItemDecoration(MarginItemDecoration(16))
-        viewModel.viewModelScope.launch {
+        lifecycleScope.launch {
             viewModel.favList.collect{
-                favListAdapter.setItems(it)
+                if (it.isEmpty()){
+                    binding.noListLayout.visibility=View.VISIBLE
+                    binding.favList.visibility=View.GONE
+                }else{
+                    favListAdapter.setItems(it)
+                    binding.noListLayout.visibility=View.GONE
+                    binding.favList.visibility=View.VISIBLE
+                }
+
             }
         }
 
 
+    }
+
+    private fun setToolBar() {
+        if (viewModel.checkedLabelList.value!=null){
+            binding.favToolBar.menu.setGroupVisible(R.id.all_fav,false)
+            binding.favToolBar.menu.setGroupVisible(R.id.label_fav,true)
+            binding.favToolBar.title= viewModel.labelsList.value.first { label -> label.id== viewModel.checkedLabelList.value!![0] }.label
+
+        }else{
+            binding.favToolBar.title=resources.getString(R.string.favorites)
+            binding.favToolBar.menu.setGroupVisible(R.id.all_fav,true)
+            binding.favToolBar.menu.setGroupVisible(R.id.label_fav,false)
+        }
     }
 
     private fun setOnMenuItemClicked() {
@@ -106,10 +137,48 @@ class FavFragment : Fragment(), LabelListAdapter.ItemClick ,FavListAdapter.ItemC
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.searchFav(newText)
+                viewModel.searchQuery.value=newText
+
                 return false
             }
         })
+        searchView.setOnFocusChangeListener {
+                _, hasFocus->
+            if (hasFocus){
+                binding.noList.text=resources.getString(R.string.no_results)
+            }else {
+                binding.noList.text=resources.getString(R.string.no_favorites_found)
+                viewModel.searchQuery.value=null
+            }
+
+        }
+        binding.favToolBar.setOnMenuItemClickListener{
+            when(it.itemId){
+                R.id.delete_all -> {
+                    viewModel.deleteAllFav()
+                    true
+                }
+                R.id.clear_all -> {
+                    viewModel.clearAllFav()
+                    true
+                }
+                R.id.delete_label -> {
+                    viewModel.deleteLabel()
+                    true
+                }
+                R.id.clear_label -> {
+                    viewModel.clearLabel()
+                    true
+                }
+                R.id.rename_label -> {
+                    addLabelDialog(requireContext(),viewModel.checkedLabelList.value!![0])
+                    true
+                }
+            else -> false
+            }
+
+
+        }
     }
 
 
@@ -120,7 +189,7 @@ class FavFragment : Fragment(), LabelListAdapter.ItemClick ,FavListAdapter.ItemC
         _binding = null
     }
 
-     private fun addLabelDialog(context: Context) {
+     private fun addLabelDialog(context: Context,id:Int =0) {
 
         val con = ContextWrapper(context)
         con.setTheme(R.style.PopupDialog)
@@ -141,7 +210,7 @@ class FavFragment : Fragment(), LabelListAdapter.ItemClick ,FavListAdapter.ItemC
             .setView(textInputLayout)
             .setPositiveButton(R.string.save) { dialog, which ->
 
-                viewModel.addLabel(editText.text!!.trim().toString())
+                viewModel.addLabel(editText.text!!.trim().toString(),id)
                 Toast.makeText(context, editText.text, Toast.LENGTH_LONG).show()
             }
             .setNegativeButton(R.string.cancel, null)
@@ -168,11 +237,25 @@ class FavFragment : Fragment(), LabelListAdapter.ItemClick ,FavListAdapter.ItemC
     }
 
     override fun onClick(label: Label, checked: Boolean) {
-        viewModel.updateFavList()
+
+        if (checked){
+            viewModel.checkedLabelList.value= arrayListOf(label.id)
+            binding.favToolBar.title=label.label
+            binding.favToolBar.menu.setGroupVisible(R.id.all_fav,false)
+            binding.favToolBar.menu.setGroupVisible(R.id.label_fav,true)
+        }else{
+            viewModel.checkedLabelList.value=null
+            binding.favToolBar.title=resources.getString(R.string.favorites)
+            binding.favToolBar.menu.setGroupVisible(R.id.all_fav,true)
+            binding.favToolBar.menu.setGroupVisible(R.id.label_fav,false)
+        }
+
+
     }
 
     override fun onPlayClicked(video: FavVideo) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(keyText.urlPrefix + video.id)))
+        startService()
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(KeyText.urlPrefix + video.id)))
     }
 
     override fun onFavClicked(videoTable: FavVideo, selected: Boolean) {
@@ -183,20 +266,42 @@ class FavFragment : Fragment(), LabelListAdapter.ItemClick ,FavListAdapter.ItemC
     }
 
     override fun onChannelClicked(video: FavVideo) {
+        startService()
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(video.channelUrl)))
     }
 
     override fun onShareOptionClicked(video: FavVideo) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        val shareBody = "Look what I found @NavTube " + keyText.urlPrefix + video.id
+        val shareBody = "Look what I found @NavTube " + KeyText.urlPrefix + video.id
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
         startActivity(Intent.createChooser(sharingIntent, "Share via"))
     }
 
-    override fun onReportOptionClicked(video: Int) {
-        Toast.makeText(context, "Soon", Toast.LENGTH_LONG).show()
+    override fun onMoveItemClicked(video: FavVideo) {
+        if (!viewModel.labelsList.value.isNullOrEmpty() ) {
+
+            viewModel.labelsList.value?.let {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(resources.getString(R.string.selectLabel))
+                    .setItems(it.map { label -> label.label }.toTypedArray()) { dialog, which ->
+                        video.label = it[which].id
+                        viewModel.updateFavVideo(video)
+                    }
+                    .show()
+            }
+        }else makeMessage(resources.getString(R.string.no_label_make_label))
     }
 
+    private fun makeMessage(message: String) {
+        Snackbar.make(requireContext(),binding.root,message,1000).show()
+    }
+    private fun startService(){
+        binding.root.postDelayed({
+            val service = Intent(context, BubbleService::class.java)
+            ContextCompat.startForegroundService(requireContext(),service)
+        },2000)
+
+    }
 }

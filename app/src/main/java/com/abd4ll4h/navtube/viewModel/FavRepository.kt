@@ -1,6 +1,7 @@
 package com.abd4ll4h.navtube.viewModel
 
 import android.app.Application
+import android.content.Context
 import androidx.annotation.WorkerThread
 import com.abd4ll4h.navtube.DataFetch.VideoTable
 import com.abd4ll4h.navtube.dataBase.AppDB
@@ -10,8 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class FavRepository(val application: Application) {
-    private val database by lazy { AppDB.DatabaseBuilder.getInstance(application).favDao()}
+class FavRepository(val context: Context) {
+    private val database by lazy { AppDB.DatabaseBuilder.getInstance(context).favDao()}
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -39,14 +40,50 @@ class FavRepository(val application: Application) {
             database.updateFav(video)
         }
     }
-    fun getFav(id:IntArray?=null):Flow<List<FavVideo>>{
-        return if (id==null) database.getFav()
-        else database.getFavFilter(id)
+    fun getFav(query: String?= null,labelId:IntArray?=null):Flow<List<FavVideo>>{
+        return if (query!=null && labelId==null)
+            database.searchFavAll(query)
+        else if (query==null && labelId!=null)
+            database.getFavFilter(labelId)
+        else if (query!=null && labelId!=null)
+            database.searchFavWithLabel(query,labelId)
+        else database.getFav()
     }
 
-    fun searchFav(text: String, checkedLabelList: IntArray?=null): Flow<List<FavVideo>> {
-        return  if(checkedLabelList==null) database.searchFavAll(text)
-        else database.searchFavWithLabel(text,checkedLabelList)
+
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun deleteAllFav(list: List<Label>) {
+        withContext(Dispatchers.IO){
+           if (list.isNotEmpty()) database.deleteAllFav(list)
+            database.deleteAllFavWithoutLabel()
+
+        }
+    }
+
+   suspend fun clearAllFav(list: List<FavVideo>) {
+        withContext(Dispatchers.IO){
+            database.clearAllFav(list)
+        }
+    }
+
+    suspend fun deleteLabel(labelID: Int) {
+        withContext(Dispatchers.IO){
+            database.deleteLabel(labelID)
+        }
+    }
+
+    suspend fun clearLabel(labelID: Int) {
+        withContext(Dispatchers.IO){
+            database.clearLabel(labelID)
+        }
+    }
+
+    suspend fun updateLabel(label: Label) {
+        withContext(Dispatchers.IO){
+            database.updateLabel(label)
+        }
     }
 
 

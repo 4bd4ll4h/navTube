@@ -8,4 +8,27 @@
         android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="collapseActionView|always" />
+    <group
+        android:id="@+id/all_fav"
+        android:visible="true">
+        <item android:id="@+id/clear_all"
+            android:title="@string/clear_all"
+            app:showAsAction="never"/>
+        <item android:id="@+id/delete_all"
+            android:title="@string/delete_all"
+            app:showAsAction="never"/>
+    </group>
+    <group
+        android:visible="false"
+        android:id="@+id/label_fav">
+        <item android:id="@+id/clear_label"
+            android:title="@string/clear_label"
+            app:showAsAction="never"/>
+        <item android:id="@+id/delete_label"
+            android:title="@string/delete_label"
+            app:showAsAction="never"/>
+        <item android:id="@+id/rename_label"
+            android:title="@string/rename_label"
+            app:showAsAction="never"/>
+    </group>
 </menu>

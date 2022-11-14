@@ -14,14 +14,20 @@
         android:theme="@style/Base.Theme.NavTube"
         tools:targetApi="31">
         <activity
+            android:name=".onBoard.OnBoardActivity"
+            android:theme="@style/onBoardStyle"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".FavSearchActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/fav_search"/>
 
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/fav_search" />
         </activity>
         <activity
             android:name=".MainActivity"
@@ -29,21 +35,36 @@
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <receiver android:name=".bubbleWidget.BubbleService$CloseBroadcast" />
+
+        <receiver android:name=".bubbleWidget.BubbleService$HideBroadcast" />
+        <receiver android:name=".bubbleWidget.BubbleService$ShowBroadcast" />
+        <receiver
+            android:name=".bubbleWidget.OnBootLauncher"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="restartservice" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".bubbleWidget.BubbleService"
             android:configChanges="screenSize|orientation|screenLayout|navigation"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback" />
     </application>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>

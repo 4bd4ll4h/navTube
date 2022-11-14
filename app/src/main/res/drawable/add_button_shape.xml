@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?android:colorPrimaryDark"/>
-        <corners android:radius="5dp"/>
-</shape>
+
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@color/add_lable_button_selector"/>
+            <corners android:radius="5dp"/>
+        </shape>
+

@@ -3,35 +3,45 @@ package com.abd4ll4h.navtube
 import android.app.Dialog
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
-import com.abd4ll4h.navtube.DataFetch.VideoTable
-import com.abd4ll4h.navtube.DataFetch.scraper.keyText.urlPrefix
+import com.abd4ll4h.navtube.DataFetch.ResponseWrapper.Status.*
+import com.abd4ll4h.navtube.DataFetch.scraper.KeyText
+import com.abd4ll4h.navtube.DataFetch.scraper.KeyText.urlPrefix
 import com.abd4ll4h.navtube.adapters.MainListAdapter
+import com.abd4ll4h.navtube.bubbleWidget.BubbleService
+import com.abd4ll4h.navtube.bubbleWidget.dpToPx
 import com.abd4ll4h.navtube.dataBase.tables.FavVideo
 import com.abd4ll4h.navtube.dataBase.tables.Label
 import com.abd4ll4h.navtube.databinding.FragmentMainBinding
+import com.abd4ll4h.navtube.utils.ConnectionLiveData
+import com.abd4ll4h.navtube.utils.MarginItemDecoration
 import com.abd4ll4h.navtube.utils.getDimensionFromAttribute
-import com.abd4ll4h.navtube.viewModel.FavFragmentViewModel
 import com.abd4ll4h.navtube.viewModel.MainFragmentViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
 
@@ -39,16 +49,19 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
 
     private var _binding: FragmentMainBinding? = null
     val binding get() = _binding!!
+    var isRefresh = false
+
+
     private val viewModel: MainFragmentViewModel by lazy {
         ViewModelProvider(this).get(MainFragmentViewModel::class.java)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -56,31 +69,69 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
         setOnMenuItemClicked()
         super.onViewCreated(view, savedInstanceState)
 
-        val listAdapter =
-            MainListAdapter(requireContext().applicationContext, ArrayList<VideoTable>(), this,viewModel.getLabels())
+        val listAdapter = MainListAdapter(
+            requireContext().applicationContext,
+            ArrayList<FavVideo>(),
+            this,
+            viewModel.getLabels()
+        )
 
         binding.mainList.adapter = listAdapter
         binding.mainList.layoutManager = LinearLayoutManager(requireContext())
         binding.mainList.setHasFixedSize(false)
-        binding.mainList.addItemDecoration(MarginItemDecoration(8))
-        lifecycleScope.launchWhenResumed {
-            viewModel.getVideoItem().observe(viewLifecycleOwner) {
-                binding.swipeRefreshLayout.isRefreshing = false
-                Log.i("_check",it.size.toString())
-                listAdapter.setList(it)
+        binding.mainList.addItemDecoration(MarginItemDecoration(dpToPx(15f)))
+        binding.swipeRefreshLayout.isRefreshing = true
 
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.videoItem.collect {
+                    when (it.status) {
+                        SUCCESS -> {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            if (isRefresh) {
+                                isRefresh=false
+                                listAdapter.clearAndSetList(it.data as ArrayList<FavVideo>)
+                            }
+                            else listAdapter.setList(it.data as ArrayList<FavVideo>)
+                            if (it.data.isNotEmpty()) {
+                                binding.fab.alpha = 1f
+                                binding.noListLayout.visibility = View.GONE
+                                binding.mainList.visibility = View.VISIBLE
+
+                            } else binding.noListLayout.visibility = View.VISIBLE
+
+                        }
+                        ERROR -> {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            showMessage(it.message)
+                            if (it.data.isNotEmpty()) binding.fab.alpha = 1f
+                            else {
+                                binding.noListLayout.visibility = View.VISIBLE
+                                binding.mainList.visibility = GONE
+                            }
+                        }
+                        LOADING -> {
+                            if (it.data.isEmpty()) binding.fab.alpha = 0.5f
+                            binding.noListLayout.visibility = View.GONE
+                        }
+                    }
+                }
             }
+
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
-            lifecycleScope.launch {
-                viewModel.refreshList()
-            }
+            isRefresh = true
+            viewModel.loadNewVideo()
         }
 
 
     }
 
-
+    private fun showMessage(message: String?) {
+        Toast.makeText(this.context, message, Toast.LENGTH_LONG).show()
+    }
 
     fun smoothScrollToTop() {
         val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
@@ -116,62 +167,64 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
     override fun onStart() {
         super.onStart()
         binding.fab.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                onPlayClicked(viewModel.getVideoItem().value!!.random())
-            }
+            if (viewModel.videoItem.value.data.isNotEmpty())
+                onPlayClicked(viewModel.videoItem.value.data[0])
+            else showMessage(resources.getString(R.string.NoVideoPleseResfresh))
 
         }
     }
 
+
     override fun onDestroyView() {
+
         super.onDestroyView()
 
         _binding = null
 
     }
 
-    override fun onChannelClicked(video: VideoTable) {
+    override fun onChannelClicked(video: FavVideo) {
+        startService()
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(video.channelUrl)))
     }
 
-    override fun onPlayClicked(video: VideoTable) {
+    override fun onPlayClicked(video: FavVideo) {
+        startService()
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(urlPrefix + video.id)))
     }
 
-    override fun onShareOptionClicked(video: VideoTable) {
+    override fun onShareOptionClicked(video: FavVideo) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        val shareBody = "Look what I found @NavTube " + urlPrefix + video.id
+        val shareBody =
+            resources.getString(R.string.look_what_I_found) + KeyText.urlPrefix + video.id
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
-        startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        startActivity(Intent.createChooser(sharingIntent, resources.getString(R.string.share_via)))
     }
 
-    override fun onReportOptionClicked(video: Int) {
+    override fun onReportOptionClicked(video: Int) =
         Toast.makeText(context, "Soon", Toast.LENGTH_LONG).show()
-    }
 
-    override fun onListEnd() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.loadNewVideo()
-        }
-    }
 
-    override fun onFavClicked(videoTable: FavVideo, selected: Boolean) {
+    override fun onListEnd() = viewModel.loadNewVideo()
+
+
+    override fun onFavClicked(video: FavVideo, selected: Boolean) {
         if (selected) {
-            videoTable.isFav = true
-            viewModel.insertFAv(videoTable)
-        }else viewModel.deleteFav(videoTable)
+            video.isFav = true
+            viewModel.insertFAv(video)
+        } else viewModel.deleteFav(video)
     }
 
     override fun onLabelClicked(label: Label, video: FavVideo) {
-        if (!video.isFav)video.isFav=true
-        video.label=label.id
+        if (!video.isFav) video.isFav = true
+        video.label = label.id
         viewModel.updateFav(video)
     }
 
     override fun addLabelDialog() {
-        val context= requireContext()
+        val context = requireContext()
         val con = ContextWrapper(context)
 
         con.setTheme(R.style.PopupDialog)
@@ -217,7 +270,48 @@ class MainFragment : Fragment(), MainListAdapter.ItemClick {
         }
     }
 
+    private fun startService() {
+        binding.root.postDelayed({
+            val service = Intent(context, BubbleService::class.java)
+            ContextCompat.startForegroundService(requireContext(), service)
+        }, 2000)
 
+    }
 
+    fun connectivityChanged(isConnected: Boolean) {
+        if (isConnected) {
 
+            binding.fab.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_baseline_cloud_24,
+                    requireContext().theme
+                )
+            )
+            binding.fab.imageTintList = ColorStateList.valueOf(Color.GREEN)
+            binding.fab.postDelayed({
+                binding.fab.imageTintList = null
+                binding.fab.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.nav_logo,
+                        requireContext().theme
+                    )
+                )
+
+            }, 1500)
+
+        } else {
+
+            binding.fab.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_baseline_cloud_off_24,
+                    requireContext().theme
+                )
+            )
+            binding.fab.imageTintList = ColorStateList.valueOf(Color.RED)
+            showMessage(resources.getString(R.string.no_Internet))
+        }
+    }
 }

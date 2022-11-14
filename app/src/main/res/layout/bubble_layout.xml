@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/bubble_root"
-    android:layout_width="wrap_content"
-    android:clipChildren="false"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:focusable="true"
     android:clipToPadding="false">
 
     <androidx.cardview.widget.CardView
@@ -14,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:padding="8dp"
+
         app:cardBackgroundColor="?android:colorPrimary"
         app:cardCornerRadius="20dp"
         app:cardElevation="16dp"
@@ -22,135 +23,136 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="8dp"
+            android:elevation="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/buble_thumbnail"
+            app:layout_constraintStart_toStartOf="@+id/buble_thumbnail"
+            tool:visibility="visible">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+
+            <ImageView
+                android:id="@+id/buble_thumbnail"
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/gry"
+                android:contentDescription="@string/video_thumbnail"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="centerCrop"/>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:elevation="4dp"
-                tool:visibility="gone">
+                android:background="@color/dark_alpha"
+                android:contentDescription="@string/i_m_feeling_lucky"
+                android:scaleType="centerCrop"
+                app:contentPadding="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ImageView.Corner"
+                app:srcCompat="@drawable/ic_baseline_share_24" />
+            <RelativeLayout
+                android:id="@+id/infoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+
+                app:layout_constraintBottom_toBottomOf="@+id/buble_thumbnail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <ImageView
-                    android:id="@+id/buble_thumbnail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/video_thumbnail"
-                    android:scaleType="fitXY"
-                    app:layout_constraintDimensionRatio="16:9"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tool:visibility="visible" />
+                    android:id="@+id/blury_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <ImageButton
+                    android:id="@+id/iconFav"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:contentDescription="@string/favorite_the_video"
+
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:src="@drawable/fav_icon_selector" />
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toStartOf="@id/iconFav"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="?android:colorPrimaryDark"
+                    android:textColor="@color/primary"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/buble_thumbnail"
-                    tool:text="Morbi aliquam velit tellus, sed volutpat lorem fringilla etMorbi aliquam velit tellus, sed volutpat lorem fringilla et"
-                     />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+                    tool:text="Morbi aliquam velit tellus, sed volutpat lorem fringilla etMorbi aliquam velit tellus, sed volutpat lorem fringilla et" />
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/label_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="horizontal">
+                android:layout_gravity="center_vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buble_thumbnail" />
 
-                <ImageButton
-                    android:id="@+id/imageButton3"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/share_to_community"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_public"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="?android:colorPrimaryDark" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="8dp"
-                    android:background="@drawable/edit_text_shape"
-                    android:gravity="center_vertical"
-                    android:hint="@string/look_what_i_found"
-                    android:minHeight="48dp"
-                    android:padding="8dp"
-                    android:paddingStart="16dp"
-                    android:textAppearance="@android:style/TextAppearance.Material.Title"
-                    android:textColor="?android:colorPrimaryDark"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/appCompatEditText2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="horizontal">
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/edit_text_shape"
+                android:gravity="center_vertical"
+                android:hint="@string/look_what_i_found"
+                android:minHeight="24dp"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:visibility="gone"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textColor="?android:colorPrimaryDark"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageButton3"
+                app:layout_constraintTop_toBottomOf="@id/label_list" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/materialDivider"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </HorizontalScrollView>
-
-                <ImageButton
-                    android:id="@+id/imageButton2"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/favorite_the_video"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_favorite"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="?android:colorPrimaryDark" />
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/materialDivider"
-                    android:layout_width="1dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="8dp"
-                    android:visibility="invisible"
-                    app:dividerColor="?android:colorPrimaryDark"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/share_to_community"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_public"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/label_list"
+                app:tint="?android:colorPrimaryDark" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

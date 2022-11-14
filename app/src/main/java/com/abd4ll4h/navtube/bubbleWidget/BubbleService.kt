@@ -1,27 +1,30 @@
 package com.abd4ll4h.navtube.bubbleWidget
 
 import android.app.*
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.media.session.MediaSessionManager
 import android.os.Build
 import android.os.IBinder
-import android.os.Looper
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
+import com.abd4ll4h.navtube.DataFetch.Repository
 import com.abd4ll4h.navtube.MainActivity
 import com.abd4ll4h.navtube.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 
 class BubbleService : Service() {
     companion object {
         lateinit var instance: BubbleService
+        lateinit var repository: Repository
+        val bubbleScope = CoroutineScope(Dispatchers.IO)
         var initialized = false
     }
 
@@ -33,6 +36,8 @@ class BubbleService : Service() {
 
         instance = this
         initialized = true
+        repository=Repository.DataRepository.getInstance(this)
+
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         bubbleLayout = BubbleLayout(windowManager, this)
         val channelId =
@@ -52,7 +57,12 @@ class BubbleService : Service() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setOngoing(true)
             .setContentTitle("NavTube bubble widget")
-            .setSmallIcon(R.drawable.ic_nav_small_logo)
+            .setSmallIcon(R.drawable.ic_small_logo)
+            .setColor(getColor(R.color.red))
+            .setColorized(true)
+            .addAction(R.drawable.ic_show,getString(R.string.show),PendingIntent.getBroadcast(application,0,Intent(application, ShowBroadcast::class.java),0))
+            .addAction(R.drawable.ic_hide,getString(R.string.hide),PendingIntent.getBroadcast(application,1,Intent(application, HideBroadcast::class.java),0))
+            .addAction(R.drawable.ic_baseline_close_24,getString(R.string.Close),PendingIntent.getBroadcast(application,2,Intent(application, CloseBroadcast::class.java),0))
             .setCategory(Notification.CATEGORY_SERVICE)
             .setContentIntent(pendingIntent).build()
 
@@ -83,39 +93,38 @@ class BubbleService : Service() {
         return channelId
     }
 
-    internal class CheckRunningActivity(con: Context?) : Thread() {
-        var am: ActivityManager? = null
-        var context: Context? = null
-        override fun run() {
-            Looper.prepare()
-            while (true) {
-                // Return a list of the tasks that are currently running,
-                // with the most recent being first and older ones after in order.
-                // Taken 1 inside getRunningTasks method means want to take only
-                // top activity from stack and forgot the olders.
-                val taskInfo = am!!.getRunningTasks(1)
-                val currentRunningActivityName = taskInfo[0].topActivity!!.className
-                if (currentRunningActivityName == "PACKAGE_NAME.ACTIVITY_NAME") {
-                    // show your activity here on top of PACKAGE_NAME.ACTIVITY_NAME
-                }
-            }
-            Looper.loop()
-        }
-
-        init {
-            context = con
-            am = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        }
-    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         bubbleLayout.postDelayed({
-            bubbleLayout.bubbleLayoutContent.springX.springConfig = SpringConfigs.NOT_DRAGGING
-            bubbleLayout.bubbleLayoutContent.springY.springConfig = SpringConfigs.NOT_DRAGGING
-            bubbleLayout.bubbleLayoutContent.springX.endValue=0.0
-            bubbleLayout.bubbleLayoutContent.springX.endValue=0.0
+            bubbleLayout.bubble.springX.springConfig = SpringConfigs.NOT_DRAGGING
+            bubbleLayout.bubble.springY.springConfig = SpringConfigs.NOT_DRAGGING
+            bubbleLayout.bubble.springX.endValue=0.0
+            bubbleLayout.bubble.springX.endValue=0.0
             bubbleLayout.close.hide()
         },1000)
+    }
+
+     class CloseBroadcast : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            instance.bubbleLayout.onClose()
+            instance.stopForeground(true)
+            instance.stopSelf()
+        }
+    }
+     class ShowBroadcast : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (instance.bubbleLayout.bubble.isConnection){
+                instance.bubbleLayout.showAll()
+            }else{
+                Toast.makeText(context,context!!.getString(R.string.no_Internet),Toast.LENGTH_LONG).show()
+            }
+
+        }
+    }
+     class HideBroadcast : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            instance.bubbleLayout.hideAll()
+        }
     }
 }

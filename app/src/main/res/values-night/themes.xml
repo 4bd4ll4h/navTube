@@ -12,8 +12,10 @@
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="searchViewStyle">@style/searchViewStyle</item>
         <item name="searchEditTextBackgroundColor">@color/searchViewBackground</item>
+        <item name="placeholderColor">@color/primaryDarkLessShade</item>
+
     </style>
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.NavTube</item>
         <item name="windowSplashScreenBackground">@color/primaryDark</item>
@@ -30,7 +32,5 @@
         <item name="defaultQueryHint">@string/search_hint</item>
         <item name="searchHintIcon">@null</item>
         <item name="queryBackground">@drawable/search_edittext_background</item>
-
-
     </style>
 </resources>

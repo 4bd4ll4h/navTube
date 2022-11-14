@@ -1,4 +1,4 @@
-package com.abd4ll4h.navtube
+package com.abd4ll4h.navtube.utils
 
 import android.graphics.Rect
 import android.view.View
@@ -13,7 +13,7 @@ class MarginItemDecoration(private val spaceSize: Int) : RecyclerView.ItemDecora
     ) {
         with(outRect) {
             if (parent.getChildAdapterPosition(view) == 0) {
-                top = spaceSize
+                top = spaceSize/2
             }
             bottom = spaceSize
         }

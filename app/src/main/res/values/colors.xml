@@ -10,5 +10,8 @@
     <color name="unactiveDark">#86F1F8F9</color>
     <color name="primaryDarkLessShade">#306C73</color>
     <color name="searchViewBackground">#CC053F46</color>
+    <color name="gry">#AFAFAF</color>
+    <color name="red">#FFFF0000</color>
+    <color name="dark_alpha">#80142D30</color>
 
 </resources>

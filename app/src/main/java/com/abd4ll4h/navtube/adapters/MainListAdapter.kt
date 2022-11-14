@@ -5,13 +5,14 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.abd4ll4h.navtube.DataFetch.VideoTable
 import com.abd4ll4h.navtube.R
 import com.abd4ll4h.navtube.dataBase.tables.FavVideo
 import com.abd4ll4h.navtube.dataBase.tables.Label
@@ -20,18 +21,19 @@ import com.abd4ll4h.navtube.databinding.MainCardBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.facebook.rebound.SimpleSpringListener
 import com.facebook.rebound.Spring
 import com.facebook.rebound.SpringSystem
 import com.facebook.rebound.SpringUtil
+import jp.wasabeef.blurry.Blurry
 
 
 class MainListAdapter(
     private val context: Context,
-    private var videoList: ArrayList<VideoTable>,
+    private var videoList: ArrayList<FavVideo>,
     val itemClicked: ItemClick,
     val labels: LiveData<List<Label>>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -41,11 +43,15 @@ class MainListAdapter(
     class LoadingViewHolder(private val binding: LoadingItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    inner class ViewHolder(val binding: MainCardBinding, val itemClicked: ItemClick) :
+    inner class ViewHolder(
+        val binding: MainCardBinding,
+        val itemClicked: ItemClick,
+        lifecycleOwner: LifecycleOwner
+    ) :
         RecyclerView.ViewHolder(binding.root), LabelListAdapter.ItemClick {
         private val mScaleSpring: Spring = SpringSystem.create().createSpring();
         private var clickedView: View? = null
-
+        val labelsAdapter:LabelListAdapter
         private fun setClickedView(it:View){
             clickedView=it
             mScaleSpring.endValue=1.0
@@ -80,29 +86,11 @@ class MainListAdapter(
                     videoList[adapterPosition].isFav = !videoList[adapterPosition].isFav
                     it.isSelected=videoList[adapterPosition].isFav
                    setClickedView(it)
-                    itemClicked.onFavClicked(videoList[adapterPosition].toFavObj(), it.isSelected)
+                    itemClicked.onFavClicked(videoList[adapterPosition], it.isSelected)
                     if (videoList[adapterPosition].isFav){
-                        val listAdapter = LabelListAdapter(
-                            this,
-                            listOf()
-                        )
-                        binding.labelList.adapter = listAdapter
-                        binding.labelList.layoutManager =
-                            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                        binding.labelList.setHasFixedSize(false)
-                        labels.observe(it.findViewTreeLifecycleOwner()!!){ list ->
-                            if (list.isNotEmpty()) {
-                                binding.noLabel.visibility = View.GONE
-                                listAdapter.submitList(
-                                    (list.reversed()),
-                                    arrayListOf()
-                                )
-                                binding.labelList.scrollToPosition(0)
-                            }else binding.noLabel.visibility=View.VISIBLE
-                        }
                         binding.labelLayout.visibility=View.VISIBLE
                     }else {
-                        binding.labelList.adapter=null
+
                         binding.labelLayout.visibility=View.GONE
                     }
                 }
@@ -138,26 +126,52 @@ class MainListAdapter(
             binding.iconCommunity.setOnClickListener{
                 setClickedView(it)
             }
+            binding.thumbnail.setOnClickListener {
+                it.isSelected=!it.isSelected
+                if (it.isSelected){
+                    Blurry.with(it.context).capture(binding.thumbnail).into(it as ImageView)
+                }
+                else Glide.with(it.context)
+                    .load(videoList[adapterPosition].thumbnailurl)
+                    .centerCrop()
+                    .into(it as ImageView)
+            }
+             labelsAdapter = LabelListAdapter(this, listOf())
+            //nested recycleView fro label list
+            binding.labelList.adapter = labelsAdapter
+            binding.labelList.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.labelList.setHasFixedSize(false)
+            labels.observe(lifecycleOwner){ list ->
+                if (list.isNotEmpty()) {
+                    binding.noLabel.visibility = View.GONE
+                    labelsAdapter.submitList(
+                        (list.reversed()),
+                        arrayListOf()
+                    )
+                    binding.labelList.scrollToPosition(0)
+                }else binding.noLabel.visibility=View.VISIBLE
+            }
         }
 
         override fun onClick(label: Label, checked: Boolean) {
-            itemClicked.onLabelClicked(label,videoList[adapterPosition].toFavObj())
+            itemClicked.onLabelClicked(label,videoList[adapterPosition])
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == listItem) {
+        return if (viewType == listItem) {
             val binding =
                 MainCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(binding, itemClicked)
+            ViewHolder(binding, itemClicked, parent.findViewTreeLifecycleOwner()!!)
         } else {
             val view =
                 LoadingItemBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
 
-            return LoadingViewHolder(view)
+            LoadingViewHolder(view)
         }
     }
 
@@ -167,16 +181,16 @@ class MainListAdapter(
                 with(videoList[position]) {
                     binding.title.text = title
                     binding.channelName.text = creator
-                    var requestOptions = RequestOptions()
-                    requestOptions = requestOptions.fitCenter()
+
                     channelThumbnail?.let {
                         Glide.with(context)
                             .load(it)
-                            .apply(requestOptions)
+                            .transform(CircleCrop())
                             .into(binding.channelThumbnail)
                         binding.channelThumbnail.visibility = View.VISIBLE
                     }
 
+                    binding.thumbnail.isSelected=false
                     Glide.with(context)
                         .load(thumbnailurl)
                         .listener(object : RequestListener<Drawable> {
@@ -196,20 +210,26 @@ class MainListAdapter(
                                 dataSource: DataSource?,
                                 isFirstResource: Boolean
                             ): Boolean {
+                                binding.thumbnail.setImageDrawable(resource)
                                 binding.relativeLayout.background =
                                     AppCompatResources.getDrawable(
                                         context,
                                         R.drawable.main_card_effect
                                     )
-                                return false
+
+
+                                return true
                             }
 
                         })
-                        //.apply(requestOptions)
-                        .override(Target.SIZE_ORIGINAL)
+                      //  .apply(requestOptions)
+
+                        //.override(Target.SIZE_ORIGINAL)
+                        .centerCrop()
                         .into(binding.thumbnail)
-                    binding.iconFav.isSelected=videoList[adapterPosition].isFav
+                    binding.iconFav.isSelected=videoList[position].isFav
                 if (binding.iconFav.isSelected){
+                    labelsAdapter.setCheckedChip(videoList[position].label)
                     binding.labelLayout.visibility=View.VISIBLE
                 }else binding.labelLayout.visibility=View.GONE
                 }
@@ -218,10 +238,19 @@ class MainListAdapter(
         } else itemClicked.onListEnd()
     }
 
-    fun setList(list: ArrayList<VideoTable>) {
-        videoList = ArrayList(list)
+    fun setList(list: ArrayList<FavVideo>) {
+        // this is for removing the loading list item in the end of the list
+        if (videoList.isNotEmpty()) videoList.removeAt(videoList.lastIndex)
+        videoList.addAll(list.filter {  return@filter !videoList.contains(it) })
+        // this is for the loading list item in the end of the list
+        if (videoList.isNotEmpty())
+        videoList.add(videoList[0])
         notifyDataSetChanged()
 
+    }
+    fun clearAndSetList(list: ArrayList<FavVideo>){
+        videoList=java.util.ArrayList(list)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
@@ -235,12 +264,12 @@ class MainListAdapter(
     }
 
     interface ItemClick {
-        fun onChannelClicked(video: VideoTable)
-        fun onPlayClicked(video: VideoTable)
-        fun onShareOptionClicked(video: VideoTable)
+        fun onChannelClicked(video: FavVideo)
+        fun onPlayClicked(video: FavVideo)
+        fun onShareOptionClicked(video: FavVideo)
         fun onReportOptionClicked(video: Int)
         fun onListEnd()
-        fun onFavClicked(videoTable: FavVideo, selected: Boolean)
+        fun onFavClicked(FavVideo: FavVideo, selected: Boolean)
         fun onLabelClicked(label: Label, video: FavVideo)
         fun addLabelDialog()
     }

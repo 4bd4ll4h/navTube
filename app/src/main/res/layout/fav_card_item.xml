@@ -8,10 +8,9 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/thumbnail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:contentDescription="@string/video_thumbnail"
-        android:scaleType="centerInside"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +21,9 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/primaryDarkLessShade"
+        android:background="?placeholderColor"
         android:contentDescription="@string/video_thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="16:9"
@@ -44,12 +43,11 @@
             android:layout_marginEnd="16dp"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/channelThumbnail"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/circle_image"
                 android:visibility="gone"
                 tool:src="@tools:sample/backgrounds/scenic"
                 tool:visibility="visible" />
